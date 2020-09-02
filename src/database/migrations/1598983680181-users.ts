@@ -10,10 +10,23 @@ export class users1598983680181 implements MigrationInterface {
           {
             name: 'id',
             type: 'integer',
+            isGenerated: true,
+            generationStrategy: 'increment',
             isPrimary: true,
+            isNullable: false,
           },
           {
             name: 'name',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'email',
+            type: 'varchar',
+            isNullable: false,
+          },
+          {
+            name: 'password',
             type: 'varchar',
             isNullable: false,
           }

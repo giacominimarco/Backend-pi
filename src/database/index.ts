@@ -1,3 +1,3 @@
 import { createConnection } from 'typeorm'
 
-createConnection();
+createConnection().then(() => console.log('Sucesso, conexão com a databade estabelecida'));
