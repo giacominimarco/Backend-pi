@@ -1,5 +1,6 @@
 node_modules
 .vscode
 .env
+ormconfig.json
 
 config.txt
