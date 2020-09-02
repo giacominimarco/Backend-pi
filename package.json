@@ -8,6 +8,7 @@
   "scripts": {
     "build": "tsc",
     "start": "ts-node-dev --inspect --ignore node_modules src/server.ts",
+    "dev": "npx nodemon --exec ts-node src/index.ts",
     "typeorm": "ts-node-dev ./node_modules/typeorm/cli.js"
   },
   "dependencies": {
