@@ -3,11 +3,14 @@ import { getRepository } from 'typeorm';
 import User from '../models/User';
 
 class UserController {
+  index(req: Request, res: Response) {
+    return res.send({ userID: req.userId });
+    // return res.json({message: 'testeeeeeeee'});
+  }
+
   async store(req: Request, res: Response) {
     const repository = getRepository(User)
-    console.log(req.body);
     const { name, email, password } = req.body;
-    // console.log(name)
     const useExistes = await repository.findOne({ where: {email} });
 
     if (useExistes) {
