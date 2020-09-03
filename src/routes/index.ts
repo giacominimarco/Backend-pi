@@ -6,14 +6,14 @@ import AuthController from '../app/controllers/AuthController';
 
 const routes = Router();
 
-// Cria usuário
+// Cria usuário / cadastro
 routes.post('/users', UserController.store);
-// Gera tokem do usuário
+// Gera tokem do usuário / login
 routes.post('/auth', AuthController.authenticate);
-// Teste de autenticação
+// Se tiver um tokem ele vai acessar a rota
 routes.get('/users', AuthMiddleware, UserController.index);
 // Teste de conexão
-routes.get('/', (request, response) => {
+routes.get('/home', AuthMiddleware, (request, response) => {
   return response.json({ message: 'Hello world' })
 })
 
