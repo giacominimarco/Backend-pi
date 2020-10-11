@@ -7,6 +7,9 @@ import {
 
 export class CreatePermissionsRoles1596561423097 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+
+    await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
+
     await queryRunner.createTable(
       new Table({
         name: "permissions_roles",
