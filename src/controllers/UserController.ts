@@ -4,10 +4,19 @@ import UserRepository from "../repositories/UserRepository";
 import RoleRepository from "../repositories/RoleRepository";
 
 class UserController {
-  index(req: Request, res: Response) {
-    return res.send({ userID: req.userId });
-    // return res.json({message: 'testeeeeeeee'});
+  // index(req: Request, res: Response) {
+  //   return res.send({ userID: req.userId });
+  //   // return res.json({message: 'testeeeeeeee'});
+  // }
+
+  async index(request: Request, response: Response) {
+    const alluser = getCustomRepository(UserRepository);
+
+    const users = await alluser.find();
+
+    return response.json(users);
   }
+
   async create(request: Request, response: Response) {
     const userRepository = getCustomRepository(UserRepository);
     const roleRepository = getCustomRepository(RoleRepository);
