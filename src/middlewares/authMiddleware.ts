@@ -11,7 +11,6 @@ export default function authMiddleware(
   req: Request, res: Response, next: NextFunction,
 ) {
   const { authorization } = req.headers;
-  console.log(authorization);
 
   if (!authorization) {
     return res.sendStatus(401);
@@ -19,10 +18,9 @@ export default function authMiddleware(
 
   // Trocando Bearer por vazio e tirando espassos em branco.
   const token = authorization.replace('Bearer', '').trim();
-  console.log(token);
 
   try {
-    const data = jwt.verify(token, 'secret');
+    const data = jwt.verify(token, '93eea6a2c12628b3a3b7618f6882c912');
     const { id } = data as TokenPlayload;
 
     req.userId = id;
