@@ -35,7 +35,7 @@ class User {
   course: string;
 
   @Column()
-  classe: string;
+  team: string;
 
   @Column()
   college: string;

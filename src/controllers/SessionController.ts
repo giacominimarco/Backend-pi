@@ -9,12 +9,12 @@ class SessionController {
     const { email, password } = request.body;
 
     const userRepository = getCustomRepository(UserRepository);
-
     const user = await userRepository.findOne(
       { email },
       { relations: ["roles"] }
-    );
+      );
 
+    console.log(user);
     if (!user) {
       return response.status(400).json({ error: "Usuário ou senha inválidos" });
     }
@@ -34,9 +34,15 @@ class SessionController {
       expiresIn: "1d",
     });
 
+    const userInfo = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }
+
     return response.json({
       token,
-      user,
+      userInfo,
     });
   }
 }
