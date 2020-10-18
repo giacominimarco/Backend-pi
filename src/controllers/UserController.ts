@@ -23,8 +23,8 @@ class UserController {
 
     const { name, lastName, email,
       registration, phone, course,
-      classe, college, password,bornDate, roles, } = request.body;
-
+      college, password, bornDate, roles, team } = request.body;
+    console.log(request.body);
 
     const existUser = await userRepository.findOne({ email });
     if (existUser) {
@@ -40,7 +40,7 @@ class UserController {
       registration,
       phone,
       course,
-      classe,
+      team,
       college,
       born_date: bornDate,
       password,

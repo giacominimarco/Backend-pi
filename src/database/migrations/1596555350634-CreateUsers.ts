@@ -42,7 +42,7 @@ export class CreateUsers1596555350634 implements MigrationInterface {
             type: "varchar",
           },
           {
-            name: "classe",
+            name: "team",
             type: "varchar",
           },
           {
