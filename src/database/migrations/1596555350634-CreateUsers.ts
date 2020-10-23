@@ -30,23 +30,7 @@ export class CreateUsers1596555350634 implements MigrationInterface {
             type: "varchar",
             },
           {
-            name: "registration",
-            type: "integer",
-          },
-          {
             name: "phone",
-            type: "varchar",
-          },
-          {
-            name: "course",
-            type: "varchar",
-          },
-          {
-            name: "team",
-            type: "varchar",
-          },
-          {
-            name: "college",
             type: "varchar",
           },
           {
