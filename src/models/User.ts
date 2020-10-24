@@ -26,22 +26,13 @@ class User {
   email: string;
 
   @Column()
-  registration: number;
-
-  @Column()
   phone: string;
 
   @Column()
-  course: string;
-
-  @Column()
-  team: string;
-
-  @Column()
-  college: string;
-
-  @Column()
   born_date: Date;
+
+  @Column()
+  cpf: string;
 
   @Column()
   password: string;

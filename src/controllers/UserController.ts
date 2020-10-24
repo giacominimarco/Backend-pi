@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { getCustomRepository } from "typeorm";
 import UserRepository from "../repositories/UserRepository";
 import RoleRepository from "../repositories/RoleRepository";
+import StudentRepository from "../repositories/StudentRepository";
+import AdminRepository from "../repositories/AdminRepository";
 
 class UserController {
   // index(req: Request, res: Response) {
@@ -17,13 +19,59 @@ class UserController {
     return response.json(users);
   }
 
-  async create(request: Request, response: Response) {
+  async createStudent(request: Request, response: Response) {
     const userRepository = getCustomRepository(UserRepository);
     const roleRepository = getCustomRepository(RoleRepository);
+    const studentRepository = getCustomRepository(StudentRepository);
 
     const { name, lastName, email,
       registration, phone, course,
-      college, password, bornDate, roles, team } = request.body;
+      college, password, cpf, bornDate, roles, team } = request.body;
+
+    const existUser = await userRepository.findOne({ email });
+    if (existUser) {
+      return response.status(400).json({ message: "Usuário já cadastrado!" });
+    }
+
+    const existsRoles = await roleRepository.findByIds(roles);
+
+    const user = userRepository.create({
+      name,
+      last_name: lastName,
+      email,
+      phone,
+      born_date: bornDate,
+      password,
+      cpf,
+      roles: existsRoles,
+    });
+
+    const responseUser =  await userRepository.save(user);
+    console.log(responseUser.id)
+
+    const infoStudent = studentRepository.create({
+      user_id: responseUser.id,
+      registration,
+      course,
+      team,
+      college,
+    });
+
+    await studentRepository.save(infoStudent);
+
+
+    return response.status(201).json(user);
+  }
+
+  async createAdmin(request: Request, response: Response) {
+    const userRepository = getCustomRepository(UserRepository);
+    const roleRepository = getCustomRepository(RoleRepository);
+    const adminRepository = getCustomRepository(AdminRepository);
+    //Inserir ao cadastrar a roles de administrador.
+
+    const { name, lastName, email,
+      registration, phone, job,
+      college, password, cpf, bornDate, roles } = request.body;
     console.log(request.body);
 
     const existUser = await userRepository.findOne({ email });
@@ -37,20 +85,35 @@ class UserController {
       name,
       last_name: lastName,
       email,
-      registration,
       phone,
-      course,
-      team,
-      college,
       born_date: bornDate,
       password,
+      cpf,
       roles: existsRoles,
     });
 
-    await userRepository.save(user);
+    const responseUser = await userRepository.save(user);
 
-    return response.status(201).json(user);
+
+    const infoAdmin = adminRepository.create({
+      user_id: responseUser.id,
+      registration,
+      job,
+      college
+    });
+
+    const responseAdmin = await adminRepository.save(infoAdmin);
+
+    const adminData = {
+      name: responseUser.name,
+      lastName: responseUser.last_name,
+      email: responseUser.email,
+      phone: responseUser.phone,
+    }
+
+    return response.status(201).json(adminData);
   }
+
 }
 
 export default new UserController();

@@ -11,8 +11,10 @@ const routes = Router();
 import { is } from "../middlewares/permission";
 
 
+
 // Cria usuário / cadastro
-routes.post("/users", UserController.create);
+routes.post("/users", UserController.createStudent);
+routes.post("/createUserAdmin", UserController.createAdmin);
 // Gera tokem do usuário / login
 routes.post("/sessions", SessionController.create);
 routes.post("/permissions", PermissionController.create);
