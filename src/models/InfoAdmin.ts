@@ -8,8 +8,8 @@ import {
 } from "typeorm";
 import User  from './User';
 
-@Entity("infoStudent")
-class InfoStudent {
+@Entity("infoAdmin")
+class InfoAdmin {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -24,10 +24,7 @@ class InfoStudent {
   registration: number;
 
   @Column()
-  course: string;
-
-  @Column()
-  team: string;
+  job: string;
 
   @Column()
   college: string;
@@ -36,4 +33,4 @@ class InfoStudent {
   created_at: Date;
 }
 
-export default InfoStudent;
+export default InfoAdmin;
