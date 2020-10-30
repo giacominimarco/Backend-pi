@@ -10,13 +10,26 @@ class UserController {
   //   return res.send({ userID: req.userId });
   //   // return res.json({message: 'testeeeeeeee'});
   // }
-
   async index(request: Request, response: Response) {
     const alluser = getCustomRepository(UserRepository);
-
     const users = await alluser.find();
-
     return response.json(users);
+  }
+
+  //Função para pesquisar um usuário específico do banco de dados
+  async indexOne(request: Request, response: Response) {
+    const userInfo = getCustomRepository(UserRepository);
+    const { id } = request.params;
+    console.log(id);
+    const user = await userInfo.findOne({
+      where: {
+        id: id,
+      },
+    });
+    if (user === null) {
+      return response.status(422).send({ message: "Não existe este usuário" });
+    }
+    return response.status(200).send({ user: user });
   }
 
   async createStudent(request: Request, response: Response) {
