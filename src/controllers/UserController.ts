@@ -19,6 +19,7 @@ class UserController {
   //Função para pesquisar um usuário específico do banco de dados
   async indexOne(request: Request, response: Response) {
     const userInfo = getCustomRepository(UserRepository);
+    const studentRepository = getCustomRepository(StudentRepository);
     const { id } = request.params;
     console.log(id);
     const user = await userInfo.findOne({
@@ -26,10 +27,25 @@ class UserController {
         id: id,
       },
     });
+    const studentInfo = await studentRepository.findOne({
+      where: {
+        user_id: id,
+      },
+    });
+
     if (user === null) {
       return response.status(422).send({ message: "Não existe este usuário" });
     }
-    return response.status(200).send({ user: user });
+    const dataUser = {
+      name: user?.name,
+      lastName: user?.last_name,
+      email: user?.email,
+      registration: studentInfo?.registration,
+      team: studentInfo?.team,
+      college: studentInfo?.college
+
+    }
+    return response.status(200).send({ user: dataUser });
   }
 
   async createStudent(request: Request, response: Response) {
