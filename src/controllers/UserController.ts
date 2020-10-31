@@ -42,8 +42,10 @@ class UserController {
       email: user?.email,
       registration: studentInfo?.registration,
       team: studentInfo?.team,
-      college: studentInfo?.college
-
+      college: studentInfo?.college,
+      phone: user?.phone,
+      bornDate: user?.born_date,
+      course: studentInfo?.course
     }
     return response.status(200).send({ user: dataUser });
   }
