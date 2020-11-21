@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
+import { getCustomRepository, In } from "typeorm";
 import UserRepository from "../repositories/UserRepository";
 import RoleRepository from "../repositories/RoleRepository";
 import StudentRepository from "../repositories/StudentRepository";
@@ -12,18 +12,32 @@ class UserController {
   // }
   async index(request: Request, response: Response) {
     const alluser = getCustomRepository(UserRepository);
+    const allStudent = getCustomRepository(StudentRepository);
     const users = await alluser.find();
-    console.log(users)
-    const usersInfo = users.map((user) => {
+    const usersIds = users.map((user)=>user.id)
+    console.log(usersIds)
+
+    const students = await allStudent.createQueryBuilder(`infoStudent`)
+    .leftJoinAndSelect("infoStudent.users", "User").where({
+      user_id: In(usersIds),
+    }).getMany()
+
+    const studentsInfo = students.map((student)=>{
       const userInfo = {
-        name: user.name,
-        last_name: user.last_name,
-        email: user.email,
-        phone: user.phone,
+        name: student.users.name,
+        last_name: student.users.last_name,
+        email: student.users.email,
+        phone: student.users.phone,
+        registration: student.registration,
+        team: student.team,
+        course: student.course,
+        hour: student.hour
       }
       return userInfo
     })
-    return response.json(usersInfo);
+
+
+    return response.json(studentsInfo);
   }
 
   //Função para pesquisar um usuário específico do banco de dados
@@ -46,6 +60,7 @@ class UserController {
     if (user === null) {
       return response.status(422).send({ message: "Não existe este usuário" });
     }
+
     const dataUser = {
       name: user?.name,
       lastName: user?.last_name,
@@ -88,7 +103,6 @@ class UserController {
     });
 
     const responseUser =  await userRepository.save(user);
-    console.log(responseUser.id)
 
     const infoStudent = studentRepository.create({
       user_id: responseUser.id,
@@ -96,12 +110,12 @@ class UserController {
       course,
       team,
       college,
+      hour: 0,
     });
-
     await studentRepository.save(infoStudent);
 
 
-    return response.status(201).json(user);
+    return response.status(201).send({Message: `Usuário salvo com sucesso!`});
   }
 
   async createAdmin(request: Request, response: Response) {
