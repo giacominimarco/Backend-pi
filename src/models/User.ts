@@ -56,12 +56,6 @@ class User {
     inverseJoinColumns: [{ name: "role_id" }],
   })
   roles: Role[];
-
-  @OneToMany(() => File, file => file.user, {
-    cascade: ['insert', 'update']
-  })
-  @JoinColumn({ name: 'user_id'})
-  files: File[];
 }
 
 export default User;

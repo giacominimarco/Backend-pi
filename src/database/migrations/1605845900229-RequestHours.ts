@@ -39,11 +39,11 @@ export class RequestHours1605845900229 implements MigrationInterface {
           },
           {
             name: 'hour',
-            type: 'timestamp',
+            type: 'integer',
           },
           {
             name: 'calculated_hours',
-            type: 'timestamp',
+            type: 'integer',
           },
           {
             name: "created_at",
