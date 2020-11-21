@@ -13,7 +13,17 @@ class UserController {
   async index(request: Request, response: Response) {
     const alluser = getCustomRepository(UserRepository);
     const users = await alluser.find();
-    return response.json(users);
+    console.log(users)
+    const usersInfo = users.map((user) => {
+      const userInfo = {
+        name: user.name,
+        last_name: user.last_name,
+        email: user.email,
+        phone: user.phone,
+      }
+      return userInfo
+    })
+    return response.json(usersInfo);
   }
 
   //Função para pesquisar um usuário específico do banco de dados
