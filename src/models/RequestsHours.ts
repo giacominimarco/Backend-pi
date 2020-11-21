@@ -54,10 +54,10 @@ class RequestsHours {
   upload_file: File;
 
   @Column()
-  hour: Date;
+  hour: number;
 
   @Column()
-  calculated_hours: Date;
+  calculated_hours: number;
 
   @CreateDateColumn()
   created_at: Date;

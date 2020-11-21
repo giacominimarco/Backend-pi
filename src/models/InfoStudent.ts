@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   JoinColumn,
-  ManyToOne,
+  ManyToOne, OneToOne
 } from "typeorm";
 import User  from './User';
 
@@ -16,9 +16,12 @@ class InfoStudent {
   @Column()
   user_id: string;
 
-  @ManyToOne(() => User)
+  @OneToOne(() => User, user => user.id)
   @JoinColumn({name: 'user_id'})
   users: User;
+
+  @Column()
+  hour: number;
 
   @Column()
   registration: number;
