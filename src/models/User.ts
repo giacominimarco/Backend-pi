@@ -7,9 +7,12 @@ import {
   JoinTable,
   BeforeInsert,
   BeforeUpdate,
+  OneToMany,
+  JoinColumn
 } from "typeorm";
 import Role from "./Role";
 import bcrypt from 'bcryptjs';
+import File from './File';
 
 @Entity("users")
 class User {
@@ -53,6 +56,12 @@ class User {
     inverseJoinColumns: [{ name: "role_id" }],
   })
   roles: Role[];
+
+  @OneToMany(() => File, file => file.user, {
+    cascade: ['insert', 'update']
+  })
+  @JoinColumn({ name: 'user_id'})
+  files: File[];
 }
 
 export default User;
