@@ -11,11 +11,10 @@ class RequestHoursController {
     const solicitationRepository = getCustomRepository(SolicitationRepository);
     const fileRepository = getCustomRepository(FileRepository);
 
-    const { typeHourId, stateId, userId, hour, calculatedHours, description, order } = request.body;
+    const { typeHourId, stateId, userId, hour, calculatedHours, description } = request.body;
 
-    console.log(order, description);
+
     const solicitation = solicitationRepository.create({
-      order,
       description
     });
 
@@ -40,7 +39,7 @@ class RequestHoursController {
       solicitation_id: responseSolicitation.id,
       file_id: responseFiles[0].id.toString(),
       hour,
-      calculated_hours: calculatedHours
+      calculated_hours: calculatedHours,
     })
 
     const responseRequestHour = await requestHoursRepository.save(requestHoursSave);

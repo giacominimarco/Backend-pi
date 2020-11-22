@@ -10,14 +10,11 @@ export class Solicitation1605844524155 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "uuid",
-            isPrimary: true,
-            generationStrategy: "uuid",
-            default: "uuid_generate_v4()",
-          },
-          {
-            name: "order",
             type: "integer",
+            isGenerated: true,
+            isPrimary: true,
+            generationStrategy: "increment",
+            isNullable: false
           },
           {
             name: "description",
