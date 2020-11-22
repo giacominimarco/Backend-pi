@@ -15,7 +15,6 @@ class UserController {
     const allStudent = getCustomRepository(StudentRepository);
     const users = await alluser.find();
     const usersIds = users.map((user)=>user.id)
-    console.log(usersIds)
 
     const students = await allStudent.createQueryBuilder(`infoStudent`)
     .leftJoinAndSelect("infoStudent.users", "User").where({
@@ -45,7 +44,6 @@ class UserController {
     const userInfo = getCustomRepository(UserRepository);
     const studentRepository = getCustomRepository(StudentRepository);
     const { id } = request.params;
-    console.log(id);
     const user = await userInfo.findOne({
       where: {
         id: id,
@@ -82,14 +80,16 @@ class UserController {
 
     const { name, lastName, email,
       registration, phone, course,
-      college, password, cpf, bornDate, roles, team } = request.body;
+      college, password, cpf, bornDate, team } = request.body;
 
     const existUser = await userRepository.findOne({ email });
     if (existUser) {
       return response.status(400).json({ message: "Usuário já cadastrado!" });
     }
 
-    const existsRoles = await roleRepository.findByIds(roles);
+    const dataRoles = await roleRepository.find({ where: {
+      name: 'ROLE_STUDENT'
+    }});
 
     const user = userRepository.create({
       name,
@@ -99,7 +99,7 @@ class UserController {
       born_date: bornDate,
       password,
       cpf,
-      roles: existsRoles,
+      roles: dataRoles,
     });
 
     const responseUser =  await userRepository.save(user);
@@ -127,7 +127,6 @@ class UserController {
     const { name, lastName, email,
       registration, phone, job,
       college, password, cpf, bornDate, roles } = request.body;
-    console.log(request.body);
 
     const existUser = await userRepository.findOne({ email });
     if (existUser) {
