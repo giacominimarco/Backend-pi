@@ -40,18 +40,14 @@ class RequestsHours {
   states: States;
 
   @Column()
-  solicitation_id: string;
-
-  @ManyToOne(() => Solicitation)
-  @JoinColumn({name: 'solicitation_id'})
-  solicitations: Solicitation;
-
-  @Column()
   file_id: string;
 
   @ManyToOne(() => File)
   @JoinColumn({name: 'file_id'})
   upload_file: File;
+
+  @Column()
+  solicitation_id: number;
 
   @Column()
   hour: number;

@@ -28,14 +28,13 @@ export class RequestHours1605845900229 implements MigrationInterface {
             name: 'state_id',
             type: 'uuid',
           },
-
-          {
-           name: 'solicitation_id',
-           type: 'uuid',
-          },
           {
             name: 'file_id',
             type: 'uuid',
+          },
+          {
+            name: 'solicitation_id',
+            type: 'integer',
           },
           {
             name: 'hour',
@@ -77,17 +76,17 @@ export class RequestHours1605845900229 implements MigrationInterface {
             onDelete: 'CASCADE',
           },
           {
-            name: 'fk_solicitation',
-            columnNames: ['solicitation_id'],
-            referencedTableName: 'solicitations',
+            name: 'fk_file',
+            columnNames: ['file_id'],
+            referencedTableName: 'upload_files',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
           {
-            name: 'fk_file',
-            columnNames: ['file_id'],
-            referencedTableName: 'upload_files',
+            name: 'fk_solicitation',
+            columnNames: ['solicitation_id'],
+            referencedTableName: 'solicitations',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
