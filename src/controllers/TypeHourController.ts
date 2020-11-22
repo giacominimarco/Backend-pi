@@ -20,6 +20,14 @@ class TypeHourController {
     return response.status(201).json(responseTypeHour);
   }
 
+  async index(request: Request, response: Response) {
+    const typeHour = getCustomRepository(TypeHourRepository);
+    const typeHours = await typeHour.find();
+    console.log(typeHour)
+
+    return response.json(typeHours);
+  }
+
 }
 
 export default new TypeHourController();
