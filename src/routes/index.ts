@@ -29,6 +29,8 @@ routes.post("/requestHours", upload.array('File'), RequestHoursController.create
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
+routes.get("/typeHours", TypeHourController.index);
+
 //routes.get('/form', formController);
 // Teste de conexão
 routes.get('/home', AuthMiddleware, (request, response) => {
