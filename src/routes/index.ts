@@ -15,6 +15,7 @@ import { is } from "../middlewares/permission";
 import StateController from '../controllers/StateController';
 import TypeHourController from '../controllers/TypeHourController';
 import RequestHoursController from '../controllers/RequestHoursController';
+import SolicitationController from '../controllers/SolicitationController';
 
 // Cria usuário / cadastro
 routes.post("/users", UserController.createStudent);
@@ -30,6 +31,7 @@ routes.post("/requestHours", upload.array('File'), RequestHoursController.create
 routes.get('/users', UserController.index);
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
 routes.get("/typeHours", TypeHourController.index);
+routes.get("/mySolicitations", SolicitationController.indexForUser);
 
 //routes.get('/form', formController);
 // Teste de conexão

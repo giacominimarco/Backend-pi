@@ -14,7 +14,6 @@ class SessionController {
       { relations: ["roles"] }
       );
 
-    console.log(user);
     if (!user) {
       return response.status(400).json({ error: "Usuário ou senha inválidos" });
     }
