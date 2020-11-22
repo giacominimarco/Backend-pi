@@ -3,6 +3,13 @@ import { getCustomRepository } from "typeorm";
 import RequestHoursRepository from '../repositories/RequestHoursRepository';
 import SolicitationRepository from '../repositories/Solicitation';
 import FileRepository from '../repositories/FileReposity';
+import { decode } from "jsonwebtoken";
+import StatesRepository from "../repositories/StatesRepository";
+
+interface DataProps{
+  hour: number;
+  calculatedHours: number;
+}
 
 class RequestHoursController {
 
@@ -10,9 +17,26 @@ class RequestHoursController {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
     const solicitationRepository = getCustomRepository(SolicitationRepository);
     const fileRepository = getCustomRepository(FileRepository);
+    const statesRepository = getCustomRepository(StatesRepository)
+    const { description, object } = request.body;
 
-    const { typeHourId, stateId, userId, hour, calculatedHours, description } = request.body;
+    const authHeader = request.headers.authorization || "";
 
+    const [, token] = authHeader?.split(" ");
+
+    const payload = decode(token);
+
+    function inputEmpty(item: any){
+      if(item === '' || item === null || item === undefined){
+        return response.status(400).send({message: `Precisa preencher todos os campos`});
+      }
+    }
+    inputEmpty(description);
+    inputEmpty(object);
+
+    const dataStates = await statesRepository.find({ where: {
+      name: 'Enviado'
+    }});
 
     const solicitation = solicitationRepository.create({
       description
@@ -21,6 +45,7 @@ class RequestHoursController {
     const responseSolicitation = await solicitationRepository.save(solicitation);
 
     const requestFiles = request.files as Express.Multer.File[];
+
     const files = requestFiles.map(file => {
       return { path: file.filename}
     })
@@ -29,23 +54,45 @@ class RequestHoursController {
       files,
     );
 
-
     const responseFiles = await fileRepository.save(filesSave);
+    if(object === undefined){
 
-    const requestHoursSave = requestHoursRepository.create({
-      user_id: userId,
-      type_hour_id: typeHourId,
-      state_id: stateId,
-      solicitation_id: responseSolicitation.id,
-      file_id: responseFiles[0].id.toString(),
-      hour,
-      calculated_hours: calculatedHours,
-    })
+    }
+    if(typeof(object) === "string"){
+      const data: DataProps = JSON.parse(object)
+      console.log(data.hour)
+      inputEmpty(data.hour);
+      inputEmpty(data.calculatedHours);
 
-    const responseRequestHour = await requestHoursRepository.save(requestHoursSave);
+      const requestHoursSave = requestHoursRepository.create({
+        user_id: payload?.sub,
+        type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
+        state_id: dataStates[0].id,
+        solicitation_id: responseSolicitation.id,
+        file_id: responseFiles[0].id.toString(),
+        hour: data.hour,
+        calculated_hours: data.calculatedHours,
+      })
+      await requestHoursRepository.save(requestHoursSave);
+    }
 
+    if(typeof(object) === "object"){
+      object.map(async(item: string, index: number)=>{
+        const data: DataProps = JSON.parse(item)
+        const requestHoursSave = requestHoursRepository.create({
+          user_id: payload?.sub,
+          type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
+          state_id: dataStates[0].id,
+          solicitation_id: responseSolicitation.id,
+          file_id: responseFiles[index].id.toString(),
+          hour: data.hour,
+          calculated_hours: data.calculatedHours,
+        })
+        await requestHoursRepository.save(requestHoursSave);
+      })
+    }
 
-    return response.status(201).json(responseRequestHour);
+     return response.status(201).send({message: `Pedido efetuado com sucesso!`});
   }
 
 }
