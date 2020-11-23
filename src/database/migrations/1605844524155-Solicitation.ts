@@ -21,11 +21,25 @@ export class Solicitation1605844524155 implements MigrationInterface {
             type: "varchar",
           },
           {
+            name: 'user_id',
+            type: 'uuid'
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "now()",
           },
         ],
+        foreignKeys: [
+          {
+            name: 'fk_user_id',
+            columnNames: ['user_id'],
+            referencedTableName: 'users',
+            referencedColumnNames: ['id'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
+        ]
       }))
     }
 
