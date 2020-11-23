@@ -6,10 +6,7 @@ import StudentRepository from "../repositories/StudentRepository";
 import AdminRepository from "../repositories/AdminRepository";
 
 class UserController {
-  // index(req: Request, res: Response) {
-  //   return res.send({ userID: req.userId });
-  //   // return res.json({message: 'testeeeeeeee'});
-  // }
+
   async index(request: Request, response: Response) {
     const alluser = getCustomRepository(UserRepository);
     const allStudent = getCustomRepository(StudentRepository);
