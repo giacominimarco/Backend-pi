@@ -16,6 +16,7 @@ import StateController from '../controllers/StateController';
 import TypeHourController from '../controllers/TypeHourController';
 import RequestHoursController from '../controllers/RequestHoursController';
 import SolicitationController from '../controllers/SolicitationController';
+import EspecifyTypeHourController from '../controllers/EspecifyTypeHourController';
 
 // Cria usuário / cadastro
 routes.post("/users", UserController.createStudent);
@@ -27,6 +28,8 @@ routes.post("/roles", RoleController.create);
 routes.post("/states", StateController.createState);
 routes.post("/typeHour", TypeHourController.createTypeHour);
 routes.post("/requestHours", upload.array('File'), RequestHoursController.createRequestHour);
+routes.post("/especifyTypeHour", EspecifyTypeHourController.createEspecifyTypeHour);
+
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
