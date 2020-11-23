@@ -39,6 +39,7 @@ class RequestHoursController {
     }});
 
     const solicitation = solicitationRepository.create({
+      user_id: payload?.sub,
       description
     });
 
@@ -55,9 +56,7 @@ class RequestHoursController {
     );
 
     const responseFiles = await fileRepository.save(filesSave);
-    if(object === undefined){
 
-    }
     if(typeof(object) === "string"){
       const data: DataProps = JSON.parse(object)
       console.log(data.hour)
@@ -65,7 +64,6 @@ class RequestHoursController {
       inputEmpty(data.calculatedHours);
 
       const requestHoursSave = requestHoursRepository.create({
-        user_id: payload?.sub,
         type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
         state_id: dataStates[0].id,
         solicitation_id: responseSolicitation.id,
@@ -80,7 +78,6 @@ class RequestHoursController {
       object.map(async(item: string, index: number)=>{
         const data: DataProps = JSON.parse(item)
         const requestHoursSave = requestHoursRepository.create({
-          user_id: payload?.sub,
           type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
           state_id: dataStates[0].id,
           solicitation_id: responseSolicitation.id,

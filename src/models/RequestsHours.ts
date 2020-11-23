@@ -19,13 +19,6 @@ class RequestsHours {
   id: string;
 
   @Column()
-  user_id: string;
-
-  @ManyToOne(() => User)
-  @JoinColumn({name: 'user_id'})
-  users: User;
-
-  @Column()
   type_hour_id: string;
 
   @ManyToOne(() => TypeHours)

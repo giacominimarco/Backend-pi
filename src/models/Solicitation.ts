@@ -6,8 +6,12 @@ import {
   Column,
   OneToMany,
   JoinColumn,
+  ManyToOne,
+  OneToOne,
 } from "typeorm";
 import RequestsHours from './RequestsHours';
+import TypeHour from "./TypeHour";
+import User from "./User";
 
 @Entity("solicitations")
 class Solicitation {
@@ -16,6 +20,13 @@ class Solicitation {
 
   @Column()
   description: string;
+
+  @Column()
+  user_id: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({name: 'user_id'})
+  users: User;
 
   @CreateDateColumn()
   created_at: Date;
