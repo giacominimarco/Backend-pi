@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
 import { decode } from "jsonwebtoken";
 import { getCustomRepository } from "typeorm";
-import RequestHoursRepository from "../repositories/RequestHoursRepository";
 import SolicitationRepository from "../repositories/Solicitation";
-import TypeHourRepository from '../repositories/TypeHours';
 
 class SolicitationController {
 
@@ -14,18 +12,18 @@ class SolicitationController {
     const [, token] = authHeader?.split(" ");
 
     const payload = decode(token);
+    console.log(payload)
 
-    const searchInSolicitation = await allSolicitation.findByIds(
-      payload?.sub
+    const searchInSolicitation = await allSolicitation.find(
+      {
+        where: {
+          user_id: payload?.sub
+        }
+      }
     )
-
-
 
     return response.json(searchInSolicitation);
   }
-
-
-
 }
 
 export default new SolicitationController();
