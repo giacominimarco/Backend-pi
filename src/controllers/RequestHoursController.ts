@@ -9,6 +9,7 @@ import StatesRepository from "../repositories/StatesRepository";
 interface DataProps{
   hour: number;
   calculatedHours: number;
+  typeHourId: string;
 }
 
 class RequestHoursController {
@@ -34,10 +35,13 @@ class RequestHoursController {
     inputEmpty(description);
     inputEmpty(object);
 
+    console.log(object)
+
     const dataStates = await statesRepository.find({ where: {
       name: 'Enviado'
     }});
 
+    console.log(dataStates)
     const solicitation = solicitationRepository.create({
       user_id: payload?.sub,
       description
@@ -59,12 +63,12 @@ class RequestHoursController {
 
     if(typeof(object) === "string"){
       const data: DataProps = JSON.parse(object)
-      console.log(data.hour)
+      console.log(data.typeHourId)
       inputEmpty(data.hour);
       inputEmpty(data.calculatedHours);
 
       const requestHoursSave = requestHoursRepository.create({
-        type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
+        type_hour_id: data.typeHourId,
         state_id: dataStates[0].id,
         solicitation_id: responseSolicitation.id,
         file_id: responseFiles[0].id.toString(),
@@ -78,7 +82,7 @@ class RequestHoursController {
       object.map(async(item: string, index: number)=>{
         const data: DataProps = JSON.parse(item)
         const requestHoursSave = requestHoursRepository.create({
-          type_hour_id: 'e928d37f-69b1-4c6c-9716-cd85825a9578',
+          type_hour_id: data.typeHourId,
           state_id: dataStates[0].id,
           solicitation_id: responseSolicitation.id,
           file_id: responseFiles[index].id.toString(),
