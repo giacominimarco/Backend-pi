@@ -232,14 +232,59 @@ class EspecifyTypeHourController {
       return createEspecifyTypeHour
     })
 
+    const responseEspecify = await especifyTypeHourRepository.save(saveAllEspecifyTypeHour);
+
+
     return response.status(201).json(saveAllEspecifyTypeHour);
   }
 
   async index(request: Request, response: Response) {
-    const typeHour = getCustomRepository(TypeHourRepository);
-    const typeHours = await typeHour.find();
+    const typeHourRepository = getCustomRepository(TypeHourRepository);
+    const especifyTypeHourRepository = getCustomRepository(EspecifyTypeHourRepository);
 
-    return response.json(typeHours);
+    const teachingSearchId = await typeHourRepository.findOne({
+      where: {
+        name: "Ensino"
+      }
+    })
+
+    const extensionSearchId = await typeHourRepository.findOne({
+      where: {
+        name: "Extensão"
+      }
+    })
+
+    const researchSearchId = await typeHourRepository.findOne({
+      where: {
+        name: "Pesquisa"
+      }
+    })
+
+    const allEspecifyTeaching = await especifyTypeHourRepository.find({
+      where: {
+        type_hour_id: teachingSearchId?.id
+      }
+    })
+    const allEspecifyExtension = await especifyTypeHourRepository.find({
+      where: {
+        type_hour_id: extensionSearchId?.id
+      }
+    })
+
+    const allEspecifyResearch = await especifyTypeHourRepository.find({
+      where: {
+        type_hour_id: researchSearchId?.id
+      }
+    })
+
+
+    const allEspecify = [
+      allEspecifyTeaching,
+      allEspecifyExtension,
+      allEspecifyResearch
+    ]
+
+    return response.json(allEspecify);
   }
 
 }
