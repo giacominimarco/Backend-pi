@@ -8,7 +8,6 @@ import TypeHourRepository from '../repositories/TypeHours';
 class SolicitationController {
 
   async indexForUser(request: Request, response: Response) {
-    const allRequestsHours = getCustomRepository(RequestHoursRepository);
     const allSolicitation = getCustomRepository(SolicitationRepository)
     const authHeader = request.headers.authorization || "";
 
@@ -16,15 +15,8 @@ class SolicitationController {
 
     const payload = decode(token);
 
-    const searchInRequestHours = await allRequestsHours.find({
-      where: {
-        user_id: payload?.sub
-      }
-    });
-    const solicitationIds = searchInRequestHours.map((item)=>item.solicitation_id)
-
     const searchInSolicitation = await allSolicitation.findByIds(
-      solicitationIds
+      payload?.sub
     )
 
 

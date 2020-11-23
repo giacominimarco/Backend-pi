@@ -17,10 +17,6 @@ export class RequestHours1605845900229 implements MigrationInterface {
             default: "uuid_generate_v4()",
           },
           {
-            name: 'user_id',
-            type: 'uuid',
-          },
-          {
             name: 'type_hour_id',
             type: 'uuid',
           },
@@ -51,14 +47,6 @@ export class RequestHours1605845900229 implements MigrationInterface {
           },
         ],
         foreignKeys: [
-          {
-            name: 'fk_user',
-            columnNames: ['user_id'],
-            referencedTableName: 'users',
-            referencedColumnNames: ['id'],
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
-          },
           {
             name: 'fk_type_hour',
             columnNames: ['type_hour_id'],
