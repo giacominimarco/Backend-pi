@@ -17,6 +17,7 @@ import TypeHourController from '../controllers/TypeHourController';
 import RequestHoursController from '../controllers/RequestHoursController';
 import SolicitationController from '../controllers/SolicitationController';
 import EspecifyTypeHourController from '../controllers/EspecifyTypeHourController';
+import EventController from '../controllers/EventController';
 
 // Cria usuário / cadastro
 routes.post("/users", UserController.createStudent);
@@ -36,6 +37,7 @@ routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
 routes.get("/typeHours", TypeHourController.index);
 routes.get("/mySolicitations", SolicitationController.indexForUser);
 routes.get("/especifyTypeHour", EspecifyTypeHourController.index);
+routes.post("/event", EventController.createPDF);
 
 //routes.get('/form', formController);
 // Teste de conexão
