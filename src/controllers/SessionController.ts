@@ -4,9 +4,7 @@ import UserRepository from "../repositories/UserRepository";
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
 import { sendMail } from "../config/e-mail";
-import { createSecret } from "../config/twoAuth";
 import Speakeasy from 'speakeasy';
-import User from "../models/User";
 
 class SessionController {
   async create(request: Request, response: Response) {
@@ -64,26 +62,20 @@ class SessionController {
       { relations: ["roles"] }
       );
 
-    // const responseSecretKey = `Prezado ${user?.name},
-
-    // Para util: ${token.token}`
-    // sendMail( user?.email.toString(), responseMail, 's', 'Código de acesso')
-
-
     const token = {
       token: Speakeasy.time({
         secret: "KRAEII3FLZLWM4ZF",
         encoding: "base32",
-        step: 1500,
+        step: 300, //5 minutos
       })
     }
 
     const responseMail = `Prezado ${user?.name},
 
-    Para se autenticar na sua conta basta digitar esse código de acesso: ${token.token}`
+Para se autenticar na sua conta basta digitar esse código de acesso: ${token.token}`
     sendMail( user?.email.toString(), responseMail, 's', 'Código de acesso')
 
-    response.send({ message: "Deu certo krl"})
+    response.status(201).send({ message: "Foi encaminhado um email com o código de confirmação"})
   }
 
   async validatedUser(request: Request, response: Response) {
@@ -99,24 +91,28 @@ class SessionController {
       secret: "KRAEII3FLZLWM4ZF",
       encoding: "base32",
       token,
-      step: 1500,
+      step: 300,
       window: 0
     })
-    console.log(valid)
 
     if (!user) {
-      return response.status(400).json({ error: "Usuário ou senha inválidos" });
+      return response.status(400).json({ error: "Usuário ou senha inválidos!" });
     }
 
     if (!valid) {
-      return response.status(400).json({ error: "Token Expirado ou inválido!!" });
+      return response.status(400).json({ error: "Token Expirado ou inválido!" });
     }
-    const userSave = userRepository.update(
-      {
-        isValidate: valid
-      },user)
 
-    return response.json(userSave);
+    await userRepository.createQueryBuilder("users")
+    .update({
+      isValidate: true
+    })
+    .where(
+      { id: user.id }
+    ).updateEntity(true).execute();
+
+
+    return response.status(201).json({message: 'Código validado com sucesso.'});
   }
 }
 

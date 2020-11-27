@@ -21,7 +21,7 @@ export async function sendMail(to: string | undefined, message:string, attachmen
     text: message,
     };
   if(attachment === 's'){
-    sender.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+    await sender.sendMail(mailOptions, (err, info) => {
       if (err) {
         return console.log(err)
       }
@@ -32,13 +32,13 @@ export async function sendMail(to: string | undefined, message:string, attachmen
     const newObj = {
       attachments: [
         {
-            filename: 'file-name.pdf', // <= Here: made sure file name match
-            path: attachment, // <= Here
+            filename: 'file-name.pdf',
+            path: attachment,
             contentType: 'application/pdf'
         }
       ]}
     mailOptions = {...mailOptions, ...newObj}
-    await sender.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+    await sender.sendMail(mailOptions, (err, info) => {
       if (err) {
         return console.log(err)
       }
