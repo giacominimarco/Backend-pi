@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 
-export async function sendMail(to: string, message:string, attachment: any){
+export async function sendMail(to: string | undefined, message:string, attachment: any, subject: string){
   const sender = nodemailer.createTransport({
     // @ts-ignore
     host: process.env.EMAIL_HOST,
@@ -17,7 +17,7 @@ export async function sendMail(to: string, message:string, attachment: any){
   let mailOptions = {
     from: 'noreplaysenaisc@gmail.com',
     to: to,
-    subject: "Certificado gerado do evento",
+    subject: subject,
     text: message,
     };
   if(attachment === 's'){

@@ -31,6 +31,9 @@ routes.post("/typeHour", TypeHourController.createTypeHour);
 routes.post("/requestHours", upload.array('File'), RequestHoursController.createRequestHour);
 routes.post("/especifyTypeHour", EspecifyTypeHourController.createEspecifyTypeHour);
 
+routes.post("/sendToken", SessionController.createTokenTwoAuth)
+routes.post("/validate", SessionController.validatedUser);
+
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
