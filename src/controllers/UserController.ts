@@ -97,6 +97,7 @@ class UserController {
       password,
       cpf,
       roles: dataRoles,
+      isValidate: false
     });
 
     const responseUser =  await userRepository.save(user);
@@ -141,6 +142,7 @@ class UserController {
       password,
       cpf,
       roles: existsRoles,
+      isValidate: false
     });
 
     const responseUser = await userRepository.save(user);

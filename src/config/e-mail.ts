@@ -1,7 +1,7 @@
 import nodemailer from 'nodemailer';
 
 
-export async function sendMail(to: string, message:string, attachment: any){
+export async function sendMail(to: string | undefined, message:string, attachment: any, subject: string){
   const sender = nodemailer.createTransport({
     // @ts-ignore
     host: process.env.EMAIL_HOST,
@@ -17,11 +17,11 @@ export async function sendMail(to: string, message:string, attachment: any){
   let mailOptions = {
     from: 'noreplaysenaisc@gmail.com',
     to: to,
-    subject: "Certificado gerado do evento",
+    subject: subject,
     text: message,
     };
   if(attachment === 's'){
-    sender.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+    await sender.sendMail(mailOptions, (err, info) => {
       if (err) {
         return console.log(err)
       }
@@ -32,13 +32,13 @@ export async function sendMail(to: string, message:string, attachment: any){
     const newObj = {
       attachments: [
         {
-            filename: 'file-name.pdf', // <= Here: made sure file name match
-            path: attachment, // <= Here
+            filename: 'file-name.pdf',
+            path: attachment,
             contentType: 'application/pdf'
         }
       ]}
     mailOptions = {...mailOptions, ...newObj}
-    await sender.sendMail(mailOptions, (err, info) => { // Função que, efetivamente, envia o email.
+    await sender.sendMail(mailOptions, (err, info) => {
       if (err) {
         return console.log(err)
       }

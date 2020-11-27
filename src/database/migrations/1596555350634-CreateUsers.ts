@@ -46,6 +46,10 @@ export class CreateUsers1596555350634 implements MigrationInterface {
             type: "varchar",
           },
           {
+            name: "isValidate",
+            type: "boolean"
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "now()",

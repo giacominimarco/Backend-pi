@@ -40,6 +40,9 @@ class User {
   @Column()
   password: string;
 
+  @Column()
+  isValidate: boolean;
+
   @CreateDateColumn()
   created_at: Date;
 
