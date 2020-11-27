@@ -24,12 +24,18 @@ routes.post("/users", UserController.createStudent);
 routes.post("/createUserAdmin", UserController.createAdmin);
 // Gera tokem do usuário / login
 routes.post("/sessions", SessionController.create);
+routes.post("/sendToken", SessionController.createTokenTwoAuth)
+routes.post("/validate", SessionController.validatedUser);
+
 routes.post("/permissions", PermissionController.create);
 routes.post("/roles", RoleController.create);
 routes.post("/states", StateController.createState);
 routes.post("/typeHour", TypeHourController.createTypeHour);
 routes.post("/requestHours", upload.array('File'), RequestHoursController.createRequestHour);
 routes.post("/especifyTypeHour", EspecifyTypeHourController.createEspecifyTypeHour);
+
+
+routes.post("/event", EventController.createPDF);
 
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
@@ -39,10 +45,8 @@ routes.get("/mySolicitations", SolicitationController.indexForUser);
 routes.get("/especifyTypeHour", EspecifyTypeHourController.index);
 routes.post("/event", EventController.createPDF);
 
-//routes.get('/form', formController);
-// Teste de conexão
-routes.get('/home', AuthMiddleware, (request, response) => {
-  return response.json({ message: 'Hello world' })
+routes.get('/home', (request, response) => {
+  return response.json({ message: 'O servidor está funcionando' })
 })
 
 

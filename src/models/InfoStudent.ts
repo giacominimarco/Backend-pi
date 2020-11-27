@@ -16,7 +16,7 @@ class InfoStudent {
   @Column()
   user_id: string;
 
-  @OneToOne(() => User, user => user.id)
+  @OneToOne(() => User)
   @JoinColumn({name: 'user_id'})
   users: User;
 
