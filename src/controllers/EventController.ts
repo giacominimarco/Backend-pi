@@ -44,7 +44,7 @@ class EventController {
 
       const file = path.join(__dirname, '..','..', 'teste2.pdf');
 
-      await sendMail("phbs1235@gmail.com", "teste", file)
+      await sendMail("phbs1235@gmail.com", "teste", file, 'Certificado do evento')
 
       return response.json({message: "deu certo"})
 
