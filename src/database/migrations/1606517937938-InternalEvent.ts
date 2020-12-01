@@ -1,12 +1,12 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class Solicitation1605844524155 implements MigrationInterface {
+export class InternalEvent1606517937938 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
       await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
 
       await queryRunner.createTable(new Table({
-        name: 'solicitations',
+        name: 'internalEvent',
         columns: [
           {
             name: "id",
@@ -16,34 +16,37 @@ export class Solicitation1605844524155 implements MigrationInterface {
             default: "uuid_generate_v4()",
           },
           {
+            name: "eventName",
+            type: "varchar"
+          },
+          {
             name: "description",
-            type: "varchar",
+            type: "varchar"
           },
           {
-            name: 'user_id',
-            type: 'uuid'
+            name: "eventDate",
+            type: "date",
           },
           {
-            name: "created_at",
-            type: "timestamp",
-            default: "now()",
+            name: "activeEvent",
+            type: "boolean"
+          },
+          {
+            name: "howManyHours",
+            type: "integer"
+          },
+          {
+            name: "key",
+            type: "varchar"
           },
         ],
-        foreignKeys: [
-          {
-            name: 'fk_user_id',
-            columnNames: ['user_id'],
-            referencedTableName: 'users',
-            referencedColumnNames: ['id'],
-            onUpdate: 'CASCADE',
-            onDelete: 'CASCADE',
-          },
-        ]
-      }))
+      })
+
+      )
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.dropTable("solicitations");
+      await queryRunner.dropTable('internalEvent');
     }
 
 }

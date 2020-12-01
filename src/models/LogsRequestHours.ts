@@ -10,11 +10,11 @@ import TypeHours  from './TypeHour';
 import States  from './States';
 import Solicitation  from './Solicitation';
 import File from './File';
-import InternalEvent from "./InternalEvent";
+
 
 
 @Entity("requestsHours")
-class RequestsHours {
+class LogsRequetHours {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
@@ -47,13 +47,23 @@ class RequestsHours {
   solicitation: Solicitation;
 
   @Column()
+  updatedBy_user_id: string;
+
+  @ManyToOne(() => LogsRequetHours)
+  @JoinColumn({name: 'updatedBy_user_id'})
+  logsRequestHours: LogsRequetHours;
+
+  @Column()
   hour: number;
 
   @Column()
   calculated_hours: number;
 
+  @Column()
+  comments: string;
+
   @CreateDateColumn()
   created_at: Date;
 }
 
-export default RequestsHours;
+export default LogsRequetHours;

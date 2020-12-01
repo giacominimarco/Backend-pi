@@ -12,10 +12,10 @@ class EspecifyTypeHour {
   id: string;
 
   @Column()
-  type_hour_id: string;
+  typeHour_id: string;
 
   @ManyToOne(() => TypeHour)
-  @JoinColumn({name: 'type_hour_id'})
+  @JoinColumn({name: 'typeHour_id'})
   typeHours: TypeHour;
 
   @Column()
