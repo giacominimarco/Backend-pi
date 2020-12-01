@@ -1,13 +1,12 @@
 import {MigrationInterface, QueryRunner, Table} from "typeorm";
 
-export class RequestHours1605845900229 implements MigrationInterface {
+export class logsRequestHours1606784479387 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-
       await queryRunner.query('CREATE EXTENSION IF NOT EXISTS "uuid-ossp"');
 
       await queryRunner.createTable(new Table({
-        name: 'requestsHours',
+        name: 'logsRequestHours',
         columns: [
           {
             name: "id",
@@ -33,12 +32,20 @@ export class RequestHours1605845900229 implements MigrationInterface {
             type: "uuid"
           },
           {
+            name: "updatedBy_user_id",
+            type: "uuid"
+          },
+          {
             name: 'hour',
             type: 'integer',
           },
           {
             name: 'calculated_hours',
             type: 'integer',
+          },
+          {
+            name: "comments",
+            type: "varchar"
           },
           {
             name: "created_at",
@@ -79,14 +86,23 @@ export class RequestHours1605845900229 implements MigrationInterface {
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
           },
+          {
+            name: 'fk_updatedByUser',
+            columnNames: ['updatedBy_user_id'],
+            referencedTableName: 'users',
+            referencedColumnNames: ['id'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
         ]
       }))
 
 
     }
 
+
     public async down(queryRunner: QueryRunner): Promise<void> {
-      await queryRunner.dropTable("requestsHours");
+      await queryRunner.dropTable('logsRequestHours');
     }
 
 }
