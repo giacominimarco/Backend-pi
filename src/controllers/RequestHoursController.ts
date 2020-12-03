@@ -1,15 +1,18 @@
 import { Request, Response } from "express";
-import { getCustomRepository } from "typeorm";
+import { getCustomRepository, In } from "typeorm";
 import RequestHoursRepository from '../repositories/RequestHoursRepository';
 import SolicitationRepository from '../repositories/Solicitation';
 import FileRepository from '../repositories/FileReposity';
 import { decode } from "jsonwebtoken";
 import StatesRepository from "../repositories/StatesRepository";
+import StudentRepository from "../repositories/StudentRepository";
+import EspecifyTypeHourRepository from "../repositories/EspecifyTypeHourRepository";
 
 interface DataProps{
   hour: number;
   calculatedHours: number;
   typeHourId: string;
+  optionHourId: string;
 }
 
 class RequestHoursController {
@@ -18,7 +21,8 @@ class RequestHoursController {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
     const solicitationRepository = getCustomRepository(SolicitationRepository);
     const fileRepository = getCustomRepository(FileRepository);
-    const statesRepository = getCustomRepository(StatesRepository)
+    const statesRepository = getCustomRepository(StatesRepository);
+    const studentRepository = getCustomRepository(StudentRepository)
     const { description, object } = request.body;
 
     const authHeader = request.headers.authorization || "";
@@ -40,10 +44,14 @@ class RequestHoursController {
     const dataStates = await statesRepository.find({ where: {
       name: 'Enviado'
     }});
-
+    const dataStudent = await studentRepository.findOne({
+      where: {
+        user_id: payload?.sub
+      }
+    })
     console.log(dataStates)
     const solicitation = solicitationRepository.create({
-      user_id: payload?.sub,
+      student_id: dataStudent?.id,
       description
     });
 
@@ -63,15 +71,17 @@ class RequestHoursController {
 
     if(typeof(object) === "string"){
       const data: DataProps = JSON.parse(object)
-      console.log(data.typeHourId)
       inputEmpty(data.hour);
       inputEmpty(data.calculatedHours);
+      inputEmpty(data.optionHourId);
+
 
       const requestHoursSave = requestHoursRepository.create({
         type_hour_id: data.typeHourId,
         state_id: dataStates[0].id,
-        solicitation_id: responseSolicitation.id,
+        solicitation_id: responseSolicitation.id.toString(),
         file_id: responseFiles[0].id.toString(),
+        especify_type_hour_id: data.optionHourId,
         hour: data.hour,
         calculated_hours: data.calculatedHours,
       })
@@ -84,7 +94,8 @@ class RequestHoursController {
         const requestHoursSave = requestHoursRepository.create({
           type_hour_id: data.typeHourId,
           state_id: dataStates[0].id,
-          solicitation_id: responseSolicitation.id,
+          especify_type_hour_id: data.optionHourId,
+          solicitation_id: responseSolicitation.id.toString(),
           file_id: responseFiles[index].id.toString(),
           hour: data.hour,
           calculated_hours: data.calculatedHours,
@@ -94,6 +105,53 @@ class RequestHoursController {
     }
 
      return response.status(201).send({message: `Pedido efetuado com sucesso!`});
+  }
+  async indexRequestHour(request: Request, response: Response) {
+    const requestHoursRepository = getCustomRepository(RequestHoursRepository);
+    const solicitationRepository = getCustomRepository(SolicitationRepository);
+    const fileRepository = getCustomRepository(FileRepository);
+    const statesRepository = getCustomRepository(StatesRepository);
+    const studentRepository = getCustomRepository(StudentRepository);
+    const especifyRepository = getCustomRepository(EspecifyTypeHourRepository)
+    const { id } = request.params;
+
+
+    const allRequestHours = await requestHoursRepository.find({
+      where: {
+        solicitation_id: id
+      }
+    })
+    const allFileId = allRequestHours.map((item) => item.file_id)
+
+    const requestHours = await requestHoursRepository
+      .createQueryBuilder(`requestsHours`)
+      .leftJoinAndSelect("requestsHours.upload_file", "File")
+      .where({
+      file_id: In(allFileId),
+      })
+      .leftJoinAndSelect("requestsHours.states", "States")
+      .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
+      .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
+      .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
+      .leftJoinAndSelect("InfoStudent.users", "User")
+      .getMany()
+
+    const requestHoursInfo = requestHours.map((item,index)=>{
+
+      const requestHour = {
+        name: item.solicitation.infoStudent.users.name,
+        lastName: item.solicitation.infoStudent.users.last_name,
+        registration: item.solicitation.infoStudent.registration,
+        course: item.solicitation.infoStudent.course,
+        team: item.solicitation.infoStudent.team,
+        dateRequisition: item.created_at,
+        typeHour: item.typeHours.name,
+        hour: item.hour,
+      }
+      return requestHour
+    })
+
+    return response.send(requestHoursInfo)
   }
 
 }

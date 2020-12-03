@@ -20,7 +20,15 @@ export class UserHour1605985859068 implements MigrationInterface {
             type: 'uuid',
           },
           {
-            name: 'hour',
+            name: 'max_teaching',
+            type: 'integer',
+          },
+          {
+            name: 'max_extension',
+            type: 'integer',
+          },
+          {
+            name: 'max_research',
             type: 'integer',
           },
           {

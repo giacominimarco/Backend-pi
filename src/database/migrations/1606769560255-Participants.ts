@@ -10,7 +10,7 @@ export class Participants1606769560255 implements MigrationInterface {
         name: "internal_participants",
         columns: [
           { name: "internalEvent_id", type: "uuid" },
-          { name: "user_id", type: "uuid" },
+          { name: "student_id", type: "uuid" },
         ],
       })
     );
@@ -30,10 +30,10 @@ export class Participants1606769560255 implements MigrationInterface {
     await queryRunner.createForeignKey(
       "internal_participants",
       new TableForeignKey({
-        columnNames: ["user_id"],
+        columnNames: ["student_id"],
         referencedColumnNames: ["id"],
-        referencedTableName: "users",
-        name: "fk_users_internal",
+        referencedTableName: "infoStudent",
+        name: "fk_student_internal",
         onDelete: "CASCADE",
         onUpdate: "SET NULL",
       })

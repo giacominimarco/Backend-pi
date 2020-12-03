@@ -10,17 +10,18 @@ export class Solicitation1605844524155 implements MigrationInterface {
         columns: [
           {
             name: "id",
-            type: "uuid",
+            type: "integer",
             isPrimary: true,
-            generationStrategy: "uuid",
-            default: "uuid_generate_v4()",
+            isGenerated: true,
+            generationStrategy: "increment",
+            isNullable: false
           },
           {
             name: "description",
             type: "varchar",
           },
           {
-            name: 'user_id',
+            name: 'student_id',
             type: 'uuid'
           },
           {
@@ -32,8 +33,8 @@ export class Solicitation1605844524155 implements MigrationInterface {
         foreignKeys: [
           {
             name: 'fk_user_id',
-            columnNames: ['user_id'],
-            referencedTableName: 'users',
+            columnNames: ['student_id'],
+            referencedTableName: 'infoStudent',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',
