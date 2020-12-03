@@ -1,4 +1,3 @@
-import { request } from "express";
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -9,9 +8,8 @@ import {
   ManyToOne,
   OneToOne,
 } from "typeorm";
+import InfoStudent from "./InfoStudent";
 import RequestsHours from './RequestsHours';
-import TypeHour from "./TypeHour";
-import User from "./User";
 
 @Entity("solicitations")
 class Solicitation {
@@ -22,11 +20,11 @@ class Solicitation {
   description: string;
 
   @Column()
-  user_id: string;
+  student_id: string;
 
-  @ManyToOne(() => User)
-  @JoinColumn({name: 'user_id'})
-  users: User;
+  @ManyToOne(() => InfoStudent)
+  @JoinColumn({name: 'student_id'})
+  infoStudent: InfoStudent;
 
   @CreateDateColumn()
   created_at: Date;

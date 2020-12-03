@@ -20,6 +20,10 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
             type: 'uuid',
           },
           {
+            name: 'especify_type_hour_id',
+            type: 'uuid',
+          },
+          {
             name: 'state_id',
             type: 'uuid',
           },
@@ -29,10 +33,10 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
           },
           {
             name: "solicitation_id",
-            type: "uuid"
+            type: "integer"
           },
           {
-            name: "updatedBy_user_id",
+            name: "updated_by_admin_id",
             type: "uuid"
           },
           {
@@ -87,9 +91,9 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
             onDelete: 'CASCADE',
           },
           {
-            name: 'fk_updatedByUser',
-            columnNames: ['updatedBy_user_id'],
-            referencedTableName: 'users',
+            name: 'fk_updated_by_admin_id',
+            columnNames: ['updated_by_admin_id'],
+            referencedTableName: 'infoAdmin',
             referencedColumnNames: ['id'],
             onUpdate: 'CASCADE',
             onDelete: 'CASCADE',

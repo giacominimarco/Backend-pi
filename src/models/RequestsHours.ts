@@ -4,13 +4,13 @@ import {
   Column,
   CreateDateColumn,
   JoinColumn,
-  ManyToOne, Timestamp, OneToMany, ManyToMany
+  ManyToOne, OneToOne
 } from "typeorm";
 import TypeHours  from './TypeHour';
 import States  from './States';
 import Solicitation  from './Solicitation';
 import File from './File';
-import InternalEvent from "./InternalEvent";
+import InfoStudent from "./InfoStudent";
 
 
 @Entity("requestsHours")
@@ -26,6 +26,9 @@ class RequestsHours {
   typeHours: TypeHours;
 
   @Column()
+  especify_type_hour_id: string;
+
+  @Column()
   state_id: string;
 
   @ManyToOne(() => States)
@@ -35,14 +38,14 @@ class RequestsHours {
   @Column()
   file_id: string;
 
-  @ManyToOne(() => File)
+  @OneToOne(() => File)
   @JoinColumn({name: 'file_id'})
   upload_file: File;
 
   @Column()
   solicitation_id: string;
 
-  @ManyToOne(() => Solicitation)
+  @ManyToOne(() => Solicitation, solicitation => solicitation.infoStudent)
   @JoinColumn({name: 'solicitation_id'})
   solicitation: Solicitation;
 

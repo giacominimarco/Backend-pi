@@ -39,11 +39,14 @@ routes.post("/event", EventController.createPDF);
 
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
+routes.get("/myHours/:id", UserController.getTotalHoursOfStudent)
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
 routes.get("/typeHours", TypeHourController.index);
 routes.get("/mySolicitations", SolicitationController.indexForUser);
 routes.get("/especifyTypeHour", EspecifyTypeHourController.index);
+routes.get("/teste/:id", RequestHoursController.indexRequestHour)
 routes.post("/event", EventController.createPDF);
+
 
 routes.get('/home', (request, response) => {
   return response.json({ message: 'O servidor está funcionando' })
