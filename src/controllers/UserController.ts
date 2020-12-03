@@ -4,6 +4,7 @@ import UserRepository from "../repositories/UserRepository";
 import RoleRepository from "../repositories/RoleRepository";
 import StudentRepository from "../repositories/StudentRepository";
 import AdminRepository from "../repositories/AdminRepository";
+import UserHourRepository from "../repositories/UserHourRepository";
 
 class UserController {
 
@@ -69,12 +70,45 @@ class UserController {
     }
     return response.status(200).send({ user: dataUser });
   }
+  async getTotalHoursOfStudent(request: Request, response: Response) {
+    const userInfo = getCustomRepository(UserRepository);
+    const studentRepository = getCustomRepository(StudentRepository);
+    const userHourRepository = getCustomRepository(UserHourRepository);
+
+    const { id } = request.params;
+    const user = await userInfo.findOne({
+      where: {
+        id: id,
+      },
+    });
+    const studentInfo = await studentRepository.findOne({
+      where: {
+        user_id: id,
+      },
+    });
+    const userHourInfo = await userHourRepository.findOne({
+      where:{
+        student_id: studentInfo?.id
+      }
+    })
+    if (user === null) {
+      return response.status(422).send({ message: "Não existe este usuário" });
+    }
+
+    const allHours = {
+      teaching: userHourInfo?.max_teaching,
+      extension: userHourInfo?.max_extension,
+      research: userHourInfo?.max_research,
+    }
+
+    return response.status(200).send(allHours);
+  }
 
   async createStudent(request: Request, response: Response) {
     const userRepository = getCustomRepository(UserRepository);
     const roleRepository = getCustomRepository(RoleRepository);
     const studentRepository = getCustomRepository(StudentRepository);
-
+    const userHourRepository = getCustomRepository(UserHourRepository)
     const { name, lastName, email,
       registration, phone, course,
       college, password, cpf, bornDate, team } = request.body;
@@ -112,6 +146,13 @@ class UserController {
     });
     await studentRepository.save(infoStudent);
 
+    const userHour = userHourRepository.create({
+      student_id: infoStudent.id,
+      max_teaching: 0,
+      max_extension: 0,
+      max_research: 0
+    })
+    await userHourRepository.save(userHour);
 
     return response.status(201).send({Message: `Usuário salvo com sucesso!`});
   }

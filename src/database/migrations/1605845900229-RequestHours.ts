@@ -21,6 +21,10 @@ export class RequestHours1605845900229 implements MigrationInterface {
             type: 'uuid',
           },
           {
+            name: 'especify_type_hour_id',
+            type: 'uuid',
+          },
+          {
             name: 'state_id',
             type: 'uuid',
           },
@@ -30,7 +34,7 @@ export class RequestHours1605845900229 implements MigrationInterface {
           },
           {
             name: "solicitation_id",
-            type: "uuid"
+            type: "integer"
           },
           {
             name: 'hour',
