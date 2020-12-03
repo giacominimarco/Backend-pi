@@ -25,7 +25,7 @@ export class EspecifyTypeHour1606152011518 implements MigrationInterface {
           },
           {
             name: 'workload_equivalent',
-            type: 'varchar',
+            type: 'integer',
           },
           {
             name: 'documentation_required',

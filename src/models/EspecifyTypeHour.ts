@@ -1,3 +1,4 @@
+import { response } from "express";
 import {
   Entity,
   Column,
@@ -12,17 +13,17 @@ class EspecifyTypeHour {
   id: string;
 
   @Column()
-  typeHour_id: string;
+  type_hour_id: string;
 
   @ManyToOne(() => TypeHour)
-  @JoinColumn({name: 'typeHour_id'})
+  @JoinColumn({name: 'type_hour_id'})
   typeHours: TypeHour;
 
   @Column()
   activity: string;
 
   @Column()
-  workload_equivalent: string;
+  workload_equivalent: number;
 
   @Column()
   documentation_required: string;

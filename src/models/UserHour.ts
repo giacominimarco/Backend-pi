@@ -21,7 +21,13 @@ class UserHour {
   infoStudent: InfoStudent;
 
   @Column()
-  user_hour: number;
+  max_teaching: number;
+
+  @Column()
+  max_extension: number;
+
+  @Column()
+  max_research: number;
 
   @CreateDateColumn()
   created_at: Date;
