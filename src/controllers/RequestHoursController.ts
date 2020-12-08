@@ -7,6 +7,7 @@ import { decode } from "jsonwebtoken";
 import StatesRepository from "../repositories/StatesRepository";
 import StudentRepository from "../repositories/StudentRepository";
 import EspecifyTypeHourRepository from "../repositories/EspecifyTypeHourRepository";
+import RequestHour_Views from "../views/RequestHour_Views";
 
 interface DataProps{
   hour: number;
@@ -147,11 +148,12 @@ class RequestHoursController {
         dateRequisition: item.created_at,
         typeHour: item.typeHours.name,
         hour: item.hour,
+        file: item.upload_file
       }
       return requestHour
     })
 
-    return response.send(requestHoursInfo)
+    return response.json(RequestHour_Views.render(requestHoursInfo[0]))
   }
 
 }
