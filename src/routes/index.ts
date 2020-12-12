@@ -48,6 +48,10 @@ routes.get("/teste/:id", RequestHoursController.indexRequestHour)
 routes.post("/event", EventController.createPDF);
 
 
+routes.put("/updateStudent", UserController.updateStudent);
+routes.put("/updateAdmin", UserController.updateAdmin);
+
+
 routes.get('/home', (request, response) => {
   return response.json({ message: 'O servidor está funcionando' })
 })
