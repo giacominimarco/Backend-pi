@@ -45,6 +45,10 @@ export class RequestHours1605845900229 implements MigrationInterface {
             type: 'integer',
           },
           {
+            name: "dateOfIssue",
+            type: "timestamp"
+          },
+          {
             name: "eventType",
             type: "integer"
           },

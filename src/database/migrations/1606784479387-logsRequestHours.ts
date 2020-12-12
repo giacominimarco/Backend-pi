@@ -40,6 +40,10 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
             type: "uuid"
           },
           {
+            name: "dateOfIssue",
+            type: "timestamp"
+          },
+          {
             name: 'hour',
             type: 'integer',
           },
