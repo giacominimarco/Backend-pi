@@ -32,10 +32,6 @@ export class InfoStudent1603485383014 implements MigrationInterface {
             type: "varchar",
           },
           {
-            name: 'hour',
-            type: 'integer',
-          },
-          {
             name: "team",
             type: "varchar",
           },

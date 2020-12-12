@@ -30,7 +30,7 @@ export class CreateUsers1596555350634 implements MigrationInterface {
             },
           {
             name: "phone",
-            type: "varchar",
+            type: "numeric",
           },
           {
             name: "born_date",
@@ -38,7 +38,7 @@ export class CreateUsers1596555350634 implements MigrationInterface {
           },
           {
             name: "cpf",
-            type: "varchar",
+            type: "numeric",
           },
           {
             name: "password",

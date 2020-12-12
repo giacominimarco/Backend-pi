@@ -55,6 +55,9 @@ class RequestsHours {
   @Column()
   calculated_hours: number;
 
+  @Column()
+  eventType: number;
+
   @CreateDateColumn()
   created_at: Date;
 }

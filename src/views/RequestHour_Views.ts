@@ -29,4 +29,7 @@ export default {
 
     };
   },
+  renderMany(requestHour: indexRequestHourProps[]) {
+    return requestHour.map(item => this.render(item))
+  },
 }

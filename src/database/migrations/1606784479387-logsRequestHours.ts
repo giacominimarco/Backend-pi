@@ -52,6 +52,10 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
             type: "varchar"
           },
           {
+            name: "eventType",
+            type: "integer"
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "now()",

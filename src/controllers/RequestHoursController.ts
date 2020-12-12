@@ -40,7 +40,7 @@ class RequestHoursController {
     inputEmpty(description);
     inputEmpty(object);
 
-    console.log(object)
+
 
     const dataStates = await statesRepository.find({ where: {
       name: 'Enviado'
@@ -50,7 +50,6 @@ class RequestHoursController {
         user_id: payload?.sub
       }
     })
-    console.log(dataStates)
     const solicitation = solicitationRepository.create({
       student_id: dataStudent?.id,
       description
@@ -85,6 +84,7 @@ class RequestHoursController {
         especify_type_hour_id: data.optionHourId,
         hour: data.hour,
         calculated_hours: data.calculatedHours,
+        eventType: 1 //EVENTO EXTERNO
       })
       await requestHoursRepository.save(requestHoursSave);
     }
@@ -153,7 +153,7 @@ class RequestHoursController {
       return requestHour
     })
 
-    return response.json(RequestHour_Views.render(requestHoursInfo[0]))
+    return response.json(RequestHour_Views.renderMany(requestHoursInfo))
   }
 
 }
