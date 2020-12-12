@@ -40,6 +40,10 @@ export class InfoStudent1603485383014 implements MigrationInterface {
             type: "varchar",
           },
           {
+            name: "yearOfEntry",
+            type: 'timestamp'
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "now()",
