@@ -5,6 +5,8 @@ import RoleRepository from "../repositories/RoleRepository";
 import StudentRepository from "../repositories/StudentRepository";
 import AdminRepository from "../repositories/AdminRepository";
 import UserHourRepository from "../repositories/UserHourRepository";
+import { decode } from "jsonwebtoken";
+import { data } from "pdfkit/js/reference";
 
 class UserController {
 
@@ -151,9 +153,84 @@ class UserController {
       max_extension: 0,
       max_research: 0
     })
+
     await userHourRepository.save(userHour);
 
     return response.status(201).send({Message: `Usuário salvo com sucesso!`});
+  }
+
+  async updateStudent(request: Request, response: Response) {
+    const userRepository = getCustomRepository(UserRepository);
+    const {email, phone } = request.body;
+
+    const authHeader = request.headers.authorization || "";
+
+    const [, token] = authHeader?.split(" ");
+
+    const payload = decode(token);
+
+    const user = await userRepository.findOne({
+      where: {
+        id: payload?.sub,
+      },
+    });
+
+    if (user === null) {
+      return response.status(422).send({ message: "Não existe este usuário" });
+    }
+
+    await userRepository.createQueryBuilder("users")
+    .update({
+      email,
+      phone
+    })
+    .where(
+      { id: payload?.sub }
+    ).updateEntity(true).execute();
+
+    return response.status(201).json({message: 'Dados atualizados com sucesso'});
+  }
+
+  async updateAdmin(request: Request, response: Response) {
+    const userRepository = getCustomRepository(UserRepository);
+    const adminRepository = getCustomRepository(AdminRepository);
+    const { job, college, phone, email } = request.body;
+
+    const authHeader = request.headers.authorization || "";
+
+    const [, token] = authHeader?.split(" ");
+
+    const payload = decode(token);
+
+    const user = await adminRepository.findOne({
+      where: {
+        id: payload?.sub,
+      },
+    });
+
+    if (user === null) {
+      return response.status(422).send({ message: "Não existe este usuário" });
+    }
+
+    await adminRepository.createQueryBuilder("infoAdmin")
+    .update({
+      job,
+      college,
+    })
+    .where(
+      { user_id: payload?.sub }
+    ).updateEntity(true).execute();
+
+    await userRepository.createQueryBuilder("users")
+    .update({
+      email,
+      phone
+    })
+    .where(
+      { id: payload?.sub }
+    ).updateEntity(true).execute();
+
+    return response.status(201).json({message: 'Dados atualizados com sucesso'});
   }
 
   async createAdmin(request: Request, response: Response) {
