@@ -21,9 +21,6 @@ class InfoStudent {
   users: User;
 
   @Column()
-  hour: number;
-
-  @Column()
   registration: number;
 
   @Column()

@@ -45,6 +45,10 @@ export class RequestHours1605845900229 implements MigrationInterface {
             type: 'integer',
           },
           {
+            name: "eventType",
+            type: "integer"
+          },
+          {
             name: "created_at",
             type: "timestamp",
             default: "now()",

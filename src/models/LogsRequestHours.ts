@@ -66,6 +66,9 @@ class LogsRequestHours {
   @Column()
   comments: string;
 
+  @Column()
+  eventType: number;
+
   @CreateDateColumn()
   created_at: Date;
 }
