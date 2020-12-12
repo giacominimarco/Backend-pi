@@ -58,6 +58,9 @@ class RequestsHours {
   @Column()
   eventType: number;
 
+  @Column()
+  dateOfIssue: Date;
+
   @CreateDateColumn()
   created_at: Date;
 }

@@ -32,6 +32,9 @@ class InfoStudent {
   @Column()
   college: string;
 
+  @Column()
+  yearOfEntry: Date;
+
   @CreateDateColumn()
   created_at: Date;
 }

@@ -14,6 +14,7 @@ interface DataProps{
   calculatedHours: number;
   typeHourId: string;
   optionHourId: string;
+  emissionDate: Date;
 }
 
 class RequestHoursController {
@@ -84,7 +85,8 @@ class RequestHoursController {
         especify_type_hour_id: data.optionHourId,
         hour: data.hour,
         calculated_hours: data.calculatedHours,
-        eventType: 1 //EVENTO EXTERNO
+        eventType: 1, //EVENTO EXTERNO
+        dateOfIssue: data.emissionDate
       })
       await requestHoursRepository.save(requestHoursSave);
     }
@@ -100,6 +102,7 @@ class RequestHoursController {
           file_id: responseFiles[index].id.toString(),
           hour: data.hour,
           calculated_hours: data.calculatedHours,
+          dateOfIssue: data.emissionDate
         })
         await requestHoursRepository.save(requestHoursSave);
       })
