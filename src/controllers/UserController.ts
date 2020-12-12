@@ -110,7 +110,7 @@ class UserController {
     const userHourRepository = getCustomRepository(UserHourRepository)
     const { name, lastName, email,
       registration, phone, course,
-      college, password, cpf, bornDate, team } = request.body;
+      college, password, cpf, bornDate, team, yearOfEntry } = request.body;
 
     const existUser = await userRepository.findOne({ email });
     if (existUser) {
@@ -141,6 +141,7 @@ class UserController {
       course,
       team,
       college,
+      yearOfEntry: yearOfEntry,
     });
     await studentRepository.save(infoStudent);
 
