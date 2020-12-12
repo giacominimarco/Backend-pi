@@ -28,7 +28,6 @@ class UserController {
         registration: student.registration,
         team: student.team,
         course: student.course,
-        hour: student.hour
       }
       return userInfo
     })
@@ -142,7 +141,6 @@ class UserController {
       course,
       team,
       college,
-      hour: 0,
     });
     await studentRepository.save(infoStudent);
 

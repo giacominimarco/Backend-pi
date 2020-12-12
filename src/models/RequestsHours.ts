@@ -10,7 +10,7 @@ import TypeHours  from './TypeHour';
 import States  from './States';
 import Solicitation  from './Solicitation';
 import File from './File';
-import InfoStudent from "./InfoStudent";
+import RequestsHours_Views from '../views/RequestHour_Views'
 
 
 @Entity("requestsHours")
@@ -54,6 +54,9 @@ class RequestsHours {
 
   @Column()
   calculated_hours: number;
+
+  @Column()
+  eventType: number;
 
   @CreateDateColumn()
   created_at: Date;

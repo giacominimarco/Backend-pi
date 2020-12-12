@@ -7,6 +7,7 @@ import { decode } from "jsonwebtoken";
 import StatesRepository from "../repositories/StatesRepository";
 import StudentRepository from "../repositories/StudentRepository";
 import EspecifyTypeHourRepository from "../repositories/EspecifyTypeHourRepository";
+import RequestHour_Views from "../views/RequestHour_Views";
 
 interface DataProps{
   hour: number;
@@ -39,7 +40,7 @@ class RequestHoursController {
     inputEmpty(description);
     inputEmpty(object);
 
-    console.log(object)
+
 
     const dataStates = await statesRepository.find({ where: {
       name: 'Enviado'
@@ -49,7 +50,6 @@ class RequestHoursController {
         user_id: payload?.sub
       }
     })
-    console.log(dataStates)
     const solicitation = solicitationRepository.create({
       student_id: dataStudent?.id,
       description
@@ -84,6 +84,7 @@ class RequestHoursController {
         especify_type_hour_id: data.optionHourId,
         hour: data.hour,
         calculated_hours: data.calculatedHours,
+        eventType: 1 //EVENTO EXTERNO
       })
       await requestHoursRepository.save(requestHoursSave);
     }
@@ -147,11 +148,12 @@ class RequestHoursController {
         dateRequisition: item.created_at,
         typeHour: item.typeHours.name,
         hour: item.hour,
+        file: item.upload_file
       }
       return requestHour
     })
 
-    return response.send(requestHoursInfo)
+    return response.json(RequestHour_Views.renderMany(requestHoursInfo))
   }
 
 }

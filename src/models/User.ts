@@ -29,13 +29,13 @@ class User {
   email: string;
 
   @Column()
-  phone: string;
+  phone: number;
 
   @Column()
   born_date: Date;
 
   @Column()
-  cpf: string;
+  cpf: number;
 
   @Column()
   password: string;
