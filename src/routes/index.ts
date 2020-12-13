@@ -46,6 +46,8 @@ routes.get("/mySolicitations", SolicitationController.indexForUser);
 routes.get("/especifyTypeHour", EspecifyTypeHourController.index);
 routes.get("/teste/:id", RequestHoursController.indexRequestHour)
 routes.post("/event", EventController.createPDF);
+routes.get("/downloadFile", RequestHoursController.downloadFiles);
+routes.get("/allRequisitions", RequestHoursController.allRequestHours);
 
 
 routes.put("/updateStudent", UserController.updateStudent);
