@@ -283,7 +283,6 @@ class UserController {
 
     return response.status(201).json(adminData);
   }
-
 }
 
 export default new UserController();
