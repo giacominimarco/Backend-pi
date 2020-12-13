@@ -94,6 +94,7 @@ class RequestHoursController {
     if(typeof(object) === "object"){
       object.map(async(item: string, index: number)=>{
         const data: DataProps = JSON.parse(item)
+        console.log(data)
         const requestHoursSave = requestHoursRepository.create({
           type_hour_id: data.typeHourId,
           state_id: dataStates[0].id,
@@ -102,6 +103,7 @@ class RequestHoursController {
           file_id: responseFiles[index].id.toString(),
           hour: data.hour,
           calculated_hours: data.calculatedHours,
+          eventType: 1, //EVENTO EXTERNO
           dateOfIssue: data.emissionDate
         })
         await requestHoursRepository.save(requestHoursSave);
@@ -109,6 +111,16 @@ class RequestHoursController {
     }
 
      return response.status(201).send({message: `Pedido efetuado com sucesso!`});
+  }
+  async downloadFiles(request: Request, response: Response) {
+    const fileRepository = getCustomRepository(FileRepository);
+
+    const multer = require("multer");
+    const path = require("path");
+
+     const file = path.join(__dirname, '..', '..', 'uploads/1607802276906-document0new.pdf')
+    response.download(file)
+
   }
   async indexRequestHour(request: Request, response: Response) {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
@@ -119,12 +131,52 @@ class RequestHoursController {
     const especifyRepository = getCustomRepository(EspecifyTypeHourRepository)
     const { id } = request.params;
 
-
+    console.log(id)
     const allRequestHours = await requestHoursRepository.find({
       where: {
         solicitation_id: id
       }
     })
+    console.log(allRequestHours)
+    const allFileId = allRequestHours.map((item) => item.file_id)
+
+    const requestHours = await requestHoursRepository
+      .createQueryBuilder(`requestsHours`)
+      .leftJoinAndSelect("requestsHours.upload_file", "File")
+      .where({
+      file_id: In(allFileId),
+      })
+      .leftJoinAndSelect("requestsHours.states", "States")
+      .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
+      .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
+      .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
+      .leftJoinAndSelect("InfoStudent.users", "User")
+      .getMany()
+
+    const requestHoursInfo = requestHours.map((item,index)=>{
+
+      const requestHour = {
+        name: item.solicitation.infoStudent.users.name,
+        lastName: item.solicitation.infoStudent.users.last_name,
+        registration: item.solicitation.infoStudent.registration,
+        course: item.solicitation.infoStudent.course,
+        team: item.solicitation.infoStudent.team,
+        dateRequisition: item.created_at,
+        typeHour: item.typeHours.name,
+        hour: item.hour,
+        file: item.upload_file
+      }
+      return requestHour
+    })
+
+    return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+  }
+  async allRequestHours(request: Request, response: Response) {
+    const requestHoursRepository = getCustomRepository(RequestHoursRepository);
+
+
+    const allRequestHours = await requestHoursRepository.find()
+    console.log(allRequestHours)
     const allFileId = allRequestHours.map((item) => item.file_id)
 
     const requestHours = await requestHoursRepository
