@@ -118,16 +118,7 @@ class RequestHoursController {
 
      return response.status(201).send({message: `Pedido efetuado com sucesso!`});
   }
-  async downloadFiles(request: Request, response: Response) {
-    const fileRepository = getCustomRepository(FileRepository);
 
-    const multer = require("multer");
-    const path = require("path");
-
-     const file = path.join(__dirname, '..', '..', 'uploads/1607802276906-document0new.pdf')
-    response.download(file)
-
-  }
   async indexRequestHour(request: Request, response: Response) {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
     const solicitationRepository = getCustomRepository(SolicitationRepository);
@@ -217,7 +208,6 @@ class RequestHoursController {
     return response.json(RequestHour_Views.renderMany(requestHoursInfo))
   }
 
-
   async downloadFiles(request: Request, response: Response) {
     const fileRepository = getCustomRepository(FileRepository);
 
@@ -227,41 +217,37 @@ class RequestHoursController {
    const file = path.join(__dirname, '..', '..', `uploads/${fileRepository}`)
     response.download(file)
 
-}
+  }
 
 async requestNext(request: Request, response: Response) {
-   const requestHoursRepository = getCustomRepository(RequestHoursRepository);
-  //   const solicitationRepository = getCustomRepository(SolicitationRepository);
-  //   const fileRepository = getCustomRepository(FileRepository);
-     const statesRepository = getCustomRepository(StatesRepository);
-  //   const studentRepository = getCustomRepository(StudentRepository);
-     const especifyRepository = getCustomRepository(EspecifyTypeHourRepository)
-  //   const userRepository = getCustomRepository(UserRepository);
-     const adminRepository = getCustomRepository(AdminRepository);
-     const logsRequestHours = getCustomRepository(LogsRequestHoursRepository);
-     const { calculated_hours, comments, status } = request.body;
-     const { id } = request.params;
+    const requestHoursRepository = getCustomRepository(RequestHoursRepository);
+    const statesRepository = getCustomRepository(StatesRepository);
+    const especifyRepository = getCustomRepository(EspecifyTypeHourRepository)
+    const adminRepository = getCustomRepository(AdminRepository);
+    const logsRequestHours = getCustomRepository(LogsRequestHoursRepository);
+    const { calculated_hours, comments, status } = request.body;
+    const { id } = request.params;
 
 
-     const requestHoursInfo = await requestHoursRepository.findOne({
-       where: {
-         id: id
-       }
-     })
+    const requestHoursInfo = await requestHoursRepository.findOne({
+      where: {
+        id: id
+      }
+    })
 
     const authHeader = request.headers.authorization || "";
 
-     const [, token] = authHeader?.split(" ");
+    const [, token] = authHeader?.split(" ");
 
-     const payload = decode(token);
+    const payload = decode(token);
 
-     const requestInfoAdmin = await adminRepository.findOne({
+    const requestInfoAdmin = await adminRepository.findOne({
       where: {
         user_id: payload?.sub
       }
     })
 
-     const requestInfoStatus = await statesRepository.findOne({
+    const requestInfoStatus = await statesRepository.findOne({
       where: {
         id: status
       }
@@ -269,12 +255,12 @@ async requestNext(request: Request, response: Response) {
 
     if(requestInfoStatus?.name === "Negado") {
       await requestHoursRepository.createQueryBuilder("requestsHours")
-    .update({
-      state_id: status
-    })
-    .where(
-      { id: id }
-    ).updateEntity(true).execute();
+      .update({
+        state_id: status
+      })
+      .where(
+        { id: id }
+      ).updateEntity(true).execute();
 
     }else {
       const allStates = ["Negado",
@@ -328,60 +314,7 @@ async requestNext(request: Request, response: Response) {
     const responseLogs = await logsRequestHours.save(createLogs);
 
 
-
-
-
-
-
-     return response.json(responseLogs)
-
-
-
-
-
-  //   const states = await statesRepository.find({
-  //     where: {
-  //       state_id: id
-  //     }
-  //   })
-
-  //   const especifyState = states.map((item) => item.id)
-
-  //   const nextStep = await requestHoursRepository
-  //     .createQueryBuilder(`requestsHours`)
-  //     .leftJoinAndSelect("requestsHours.states", "States")
-  //     .getMany()
-
-  //   const nextStepInfo = nextStep.map((item,index)=>{
-
-  //     const getInfo = {
-  //       states: item.solicitation.id,
-  //       RequestsHours: item.calculated_hours
-  //     }
-  //    return getInfo
-  //   }
-  //   )
-
-  //   const authHeader = request.headers.authorization || "";
-
-  //   const [, token] = authHeader?.split(" ");
-
-  //   const payload = decode(token);
-
-  //   const user = await userRepository.findOne({
-  //     where: {
-  //       id: payload?.sub,
-  //     },
-  //   });
-
-  //   await logsRequestHours.createQueryBuilder("logsRequestHours")
-  //   .update({
-  //     calculated_hours,
-  //   })
-  //   .where(
-  //     { id: user?.id }
-  //   ).updateEntity(true).execute();
-
+    return response.json(responseLogs)
 
   }
 
