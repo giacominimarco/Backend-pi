@@ -51,6 +51,9 @@ routes.post("/event", EventController.createPDF);
 routes.put("/updateStudent", UserController.updateStudent);
 routes.put("/updateAdmin", UserController.updateAdmin);
 
+routes.get("/downloadFile", RequestHoursController.downloadFiles);
+
+routes.put("/nextStep/:id", RequestHoursController.requestNext);
 
 routes.get('/home', (request, response) => {
   return response.json({ message: 'O servidor está funcionando' })

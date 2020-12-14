@@ -14,7 +14,7 @@ import InfoAdmin from "./InfoAdmin";
 
 
 
-@Entity("logsRequestsHours")
+@Entity("logsRequestHours")
 class LogsRequestHours {
   @PrimaryGeneratedColumn("uuid")
   id: string;
@@ -44,17 +44,17 @@ class LogsRequestHours {
   upload_file: File;
 
   @Column()
-  solicitation_id: string;
+  solicitation_id: number;
 
   @ManyToOne(() => Solicitation)
   @JoinColumn({name: 'solicitation_id'})
   solicitation: Solicitation;
 
   @Column()
-  fk_updated_by_admin_id: string;
+  updated_by_admin_id: string;
 
   @ManyToOne(() => InfoAdmin)
-  @JoinColumn({name: 'fk_updated_by_admin_id'})
+  @JoinColumn({name: 'updated_by_admin_id'})
   infoAdmin: InfoAdmin;
 
   @Column()
