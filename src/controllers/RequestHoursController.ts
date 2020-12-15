@@ -167,7 +167,6 @@ class RequestHoursController {
       }
       return requestHour
     })
-
     return response.json(RequestHour_Views.renderMany(requestHoursInfo))
   }
   async allRequestHours(request: Request, response: Response) {
@@ -176,6 +175,9 @@ class RequestHoursController {
     const userRepository = getCustomRepository(UserRepository);
     const statesRepository = getCustomRepository(StatesRepository);
 
+    const statesReproved = await statesRepository.findOne({
+      name: "Negado"
+    });
 
     const allRequestHours = await requestHoursRepository.find()
 
@@ -192,7 +194,6 @@ class RequestHoursController {
       })
       .leftJoinAndSelect("users.roles", "Roles")
       .getOne()
-
         if("ROLE_COORD" === verifyUserRole?.roles[0].name){
           const allStates = await statesRepository.find({
             where: {
@@ -229,7 +230,11 @@ class RequestHoursController {
               }
               return requestHour
             })
-            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+            return response.json([{
+              responseHours: RequestHour_Views.renderMany(requestHoursInfo)
+            }, {
+              reproved: statesReproved?.id
+            }]);
         }
         if("ROLE_SECRETARY" === verifyUserRole?.roles[0].name){
           const allStates = await statesRepository.findOne({
@@ -266,7 +271,11 @@ class RequestHoursController {
               }
               return requestHour
             })
-            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+            return response.json([{
+              responseHours: RequestHour_Views.renderMany(requestHoursInfo)
+            }, {
+              reproved: statesReproved?.id
+            }]);
         }
         if("ROLE_HELP_COORD" === verifyUserRole?.roles[0].name){
           const allStates = await statesRepository.findOne({
@@ -303,7 +312,11 @@ class RequestHoursController {
               }
               return requestHour
             })
-            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+            return response.json([{
+              responseHours: RequestHour_Views.renderMany(requestHoursInfo)
+            }, {
+              reproved: statesReproved?.id
+            }]);
   }
   }
 
@@ -326,7 +339,7 @@ async requestNext(request: Request, response: Response) {
     const logsRequestHours = getCustomRepository(LogsRequestHoursRepository);
     const { calculated_hours, comments, status } = request.body;
     const { id } = request.params;
-
+    console.log(calculated_hours)
 
     const requestHoursInfo = await requestHoursRepository.findOne({
       where: {
@@ -383,6 +396,7 @@ async requestNext(request: Request, response: Response) {
               name: allStates[index+1]
             }
           })
+          console.log(requestNext)
 
           await requestHoursRepository.createQueryBuilder("requestsHours")
           .update({
@@ -398,7 +412,7 @@ async requestNext(request: Request, response: Response) {
     }
 
     const createLogs = await logsRequestHours.create({
-      calculated_hours: calculated_hours,
+      calculated_hours: calculated_hours === null ? 0 : calculated_hours,
       dateOfIssue: requestHoursInfo?.dateOfIssue,
       comments: comments,
       especify_type_hour_id: requestHoursInfo?.especify_type_hour_id,
