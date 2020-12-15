@@ -164,8 +164,6 @@ class RequestHoursController {
         typeHour: item.typeHours.name,
         hour: item.hour,
         file: item.upload_file,
-        id: item.id,
-        states_id: item.state_id
       }
       return requestHour
     })
