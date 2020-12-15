@@ -14,6 +14,7 @@ import UserRepository from "../repositories/UserRepository";
 import LogsRequestHours from "../models/LogsRequestHours";
 import LogsRequestHoursRepository from "../repositories/LogsRequestHoursRepository";
 import AdminRepository from "../repositories/AdminRepository";
+import Role from "../models/Role";
 
 interface DataProps{
   hour: number;
@@ -161,7 +162,9 @@ class RequestHoursController {
         dateRequisition: item.created_at,
         typeHour: item.typeHours.name,
         hour: item.hour,
-        file: item.upload_file
+        file: item.upload_file,
+        id: item.id,
+        states_id: item.state_id
       }
       return requestHour
     })
@@ -170,42 +173,140 @@ class RequestHoursController {
   }
   async allRequestHours(request: Request, response: Response) {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
+    const adminRepository = getCustomRepository(AdminRepository);
+    const userRepository = getCustomRepository(UserRepository);
+    const statesRepository = getCustomRepository(StatesRepository);
 
 
     const allRequestHours = await requestHoursRepository.find()
-    console.log(allRequestHours)
-    const allFileId = allRequestHours.map((item) => item.file_id)
 
-    const requestHours = await requestHoursRepository
-      .createQueryBuilder(`requestsHours`)
-      .leftJoinAndSelect("requestsHours.upload_file", "File")
+    const authHeader = request.headers.authorization || "";
+
+      const [, token] = authHeader?.split(" ");
+
+      const payload = decode(token);
+
+      const verifyUserRole = await userRepository
+      .createQueryBuilder(`users`)
       .where({
-      file_id: In(allFileId),
+        id: payload?.sub
       })
-      .leftJoinAndSelect("requestsHours.states", "States")
-      .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
-      .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
-      .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
-      .leftJoinAndSelect("InfoStudent.users", "User")
-      .getMany()
+      .leftJoinAndSelect("users.roles", "Roles")
+      .getOne()
 
-    const requestHoursInfo = requestHours.map((item,index)=>{
+      console.log(verifyUserRole)
+        if("ROLE_COORD" === verifyUserRole?.roles[0].name){
+          const allStates = await statesRepository.find({
+            where: {
+              name: In(["Em análise pelo auxiliar de Coordenação","Em análise pela secretaria"]),
+            }
+          })
+          const findIdsStates = allStates.map((item) =>(item.id))
+          const requestHours = await requestHoursRepository
+            .createQueryBuilder(`requestsHours`)
+            .where({
+              state_id: In(findIdsStates),
+            })
+            .leftJoinAndSelect("requestsHours.upload_file", "File")
+            .leftJoinAndSelect("requestsHours.states", "States")
+            .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
+            .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
+            .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
+            .leftJoinAndSelect("InfoStudent.users", "User")
+            .getMany()
 
-      const requestHour = {
-        name: item.solicitation.infoStudent.users.name,
-        lastName: item.solicitation.infoStudent.users.last_name,
-        registration: item.solicitation.infoStudent.registration,
-        course: item.solicitation.infoStudent.course,
-        team: item.solicitation.infoStudent.team,
-        dateRequisition: item.created_at,
-        typeHour: item.typeHours.name,
-        hour: item.hour,
-        file: item.upload_file
-      }
-      return requestHour
-    })
+            const requestHoursInfo = requestHours.map((item,index)=>{
+              const requestHour = {
+                name: item.solicitation.infoStudent.users.name,
+                lastName: item.solicitation.infoStudent.users.last_name,
+                registration: item.solicitation.infoStudent.registration,
+                course: item.solicitation.infoStudent.course,
+                team: item.solicitation.infoStudent.team,
+                dateRequisition: item.created_at,
+                typeHour: item.typeHours.name,
+                hour: item.hour,
+                file: item.upload_file,
+                id: item.id,
+                states_id: item.state_id
+              }
+              return requestHour
+            })
+            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+        }
+        if("ROLE_SECRETARY" === verifyUserRole?.roles[0].name){
+          const allStates = await statesRepository.findOne({
+            where: {
+              name: "Em análise pela coordenação",
+            }
+          })
+          const requestHours = await requestHoursRepository
+            .createQueryBuilder(`requestsHours`)
+            .where({
+              state_id: allStates?.id,
+            })
+            .leftJoinAndSelect("requestsHours.upload_file", "File")
+            .leftJoinAndSelect("requestsHours.states", "States")
+            .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
+            .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
+            .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
+            .leftJoinAndSelect("InfoStudent.users", "User")
+            .getMany()
 
-    return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+            const requestHoursInfo = requestHours.map((item,index)=>{
+              const requestHour = {
+                name: item.solicitation.infoStudent.users.name,
+                lastName: item.solicitation.infoStudent.users.last_name,
+                registration: item.solicitation.infoStudent.registration,
+                course: item.solicitation.infoStudent.course,
+                team: item.solicitation.infoStudent.team,
+                dateRequisition: item.created_at,
+                typeHour: item.typeHours.name,
+                hour: item.hour,
+                file: item.upload_file,
+                id: item.id,
+                states_id: item.state_id
+              }
+              return requestHour
+            })
+            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+        }
+        if("ROLE_HELP_COORD" === verifyUserRole?.roles[0].name){
+          const allStates = await statesRepository.findOne({
+            where: {
+              name: "Enviado",
+            }
+          })
+          const requestHours = await requestHoursRepository
+            .createQueryBuilder(`requestsHours`)
+            .where({
+              state_id: allStates?.id,
+            })
+            .leftJoinAndSelect("requestsHours.upload_file", "File")
+            .leftJoinAndSelect("requestsHours.states", "States")
+            .leftJoinAndSelect("requestsHours.typeHours", "TypeHours")
+            .leftJoinAndSelect("requestsHours.solicitation", "Solicitation")
+            .leftJoinAndSelect("Solicitation.infoStudent", "InfoStudent")
+            .leftJoinAndSelect("InfoStudent.users", "User")
+            .getMany()
+
+            const requestHoursInfo = requestHours.map((item,index)=>{
+              const requestHour = {
+                name: item.solicitation.infoStudent.users.name,
+                lastName: item.solicitation.infoStudent.users.last_name,
+                registration: item.solicitation.infoStudent.registration,
+                course: item.solicitation.infoStudent.course,
+                team: item.solicitation.infoStudent.team,
+                dateRequisition: item.created_at,
+                typeHour: item.typeHours.name,
+                hour: item.hour,
+                file: item.upload_file,
+                id: item.id,
+                states_id: item.state_id
+              }
+              return requestHour
+            })
+            return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+  }
   }
 
   async downloadFiles(request: Request, response: Response) {
@@ -263,7 +364,7 @@ async requestNext(request: Request, response: Response) {
       ).updateEntity(true).execute();
 
     }else {
-      const allStates = ["Negado",
+      const allStates = [
       "Enviado",
       "Em análise pelo auxiliar de Coordenação",
       "Em análise pela coordenação",
