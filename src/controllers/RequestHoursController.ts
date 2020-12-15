@@ -79,7 +79,6 @@ class RequestHoursController {
     if(typeof(object) === "string"){
       const data: DataProps = JSON.parse(object)
       inputEmpty(data.hour);
-      inputEmpty(data.calculatedHours);
       inputEmpty(data.optionHourId);
 
 
@@ -90,7 +89,7 @@ class RequestHoursController {
         file_id: responseFiles[0].id.toString(),
         especify_type_hour_id: data.optionHourId,
         hour: data.hour,
-        calculated_hours: data.calculatedHours,
+        calculated_hours: 0,
         eventType: 1, //EVENTO EXTERNO
         dateOfIssue: data.emissionDate
       })
@@ -108,7 +107,7 @@ class RequestHoursController {
           solicitation_id: responseSolicitation.id.toString(),
           file_id: responseFiles[index].id.toString(),
           hour: data.hour,
-          calculated_hours: data.calculatedHours,
+          calculated_hours: 0,
           eventType: 1, //EVENTO EXTERNO
           dateOfIssue: data.emissionDate
         })
@@ -153,6 +152,8 @@ class RequestHoursController {
     const requestHoursInfo = requestHours.map((item,index)=>{
 
       const requestHour = {
+        id: item.id,
+        states_id: item.state_id,
         name: item.solicitation.infoStudent.users.name,
         lastName: item.solicitation.infoStudent.users.last_name,
         registration: item.solicitation.infoStudent.registration,
@@ -189,9 +190,12 @@ class RequestHoursController {
       .leftJoinAndSelect("InfoStudent.users", "User")
       .getMany()
 
-    const requestHoursInfo = requestHours.map((item,index)=>{
 
+
+    const requestHoursInfo = requestHours.map((item)=>{
       const requestHour = {
+        id: item.id,
+        states_id: item.state_id,
         name: item.solicitation.infoStudent.users.name,
         lastName: item.solicitation.infoStudent.users.last_name,
         registration: item.solicitation.infoStudent.registration,
