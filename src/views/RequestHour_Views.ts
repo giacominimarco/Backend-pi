@@ -14,6 +14,8 @@ interface indexRequestHourProps {
   typeHour: string;
   hour: number;
   file: File;
+  calculatedHours: number;
+
 }[]
 
 export default {
@@ -30,6 +32,7 @@ export default {
       typeHour: requestHour.typeHour,
       hour: requestHour.hour,
       file: Files_Views.render(requestHour.file),
+      calculatedHours: requestHour.calculatedHours
     };
   },
   renderMany(requestHour: indexRequestHourProps[]) {
