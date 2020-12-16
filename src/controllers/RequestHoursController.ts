@@ -164,6 +164,7 @@ class RequestHoursController {
         typeHour: item.typeHours.name,
         hour: item.hour,
         file: item.upload_file,
+        calculatedHours: item.calculated_hours,
       }
       return requestHour
     })
@@ -226,7 +227,8 @@ class RequestHoursController {
                 hour: item.hour,
                 file: item.upload_file,
                 id: item.id,
-                states_id: item.state_id
+                states_id: item.state_id,
+                calculatedHours: item.calculated_hours
               }
               return requestHour
             })
@@ -267,7 +269,8 @@ class RequestHoursController {
                 hour: item.hour,
                 file: item.upload_file,
                 id: item.id,
-                states_id: item.state_id
+                states_id: item.state_id,
+                calculatedHours: item.calculated_hours
               }
               return requestHour
             })
@@ -308,7 +311,8 @@ class RequestHoursController {
                 hour: item.hour,
                 file: item.upload_file,
                 id: item.id,
-                states_id: item.state_id
+                states_id: item.state_id,
+                calculatedHours: item.calculated_hours
               }
               return requestHour
             })
