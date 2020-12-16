@@ -11,6 +11,7 @@ import States  from './States';
 import Solicitation  from './Solicitation';
 import File from './File';
 import InfoAdmin from "./InfoAdmin";
+import RequestsHours from "./RequestsHours";
 
 
 
@@ -18,6 +19,13 @@ import InfoAdmin from "./InfoAdmin";
 class LogsRequestHours {
   @PrimaryGeneratedColumn("uuid")
   id: string;
+
+  @Column()
+  request_hour_id: string;
+
+  @ManyToOne(() => RequestsHours)
+  @JoinColumn({name: 'request_hour_id'})
+  requestsHours: RequestsHours;
 
   @Column()
   type_hour_id: string;
