@@ -24,12 +24,12 @@ class StateController {
     const statesRepository = getCustomRepository(StatesRepository);
 
     const allStates = [
-      'Aprovado',
-      'Aprovado parcialmente',
-      'Enviado',
       'Negado',
-      'Em análise pela secretaria',
-      'Em análise pela coordenação'
+      "Enviado",
+      "Em análise pelo auxiliar de Coordenação",
+      "Em análise pela coordenação",
+      "Em análise pela secretaria",
+      "Aprovado"
     ]
 
     const createAll = allStates.map((item)=>{
