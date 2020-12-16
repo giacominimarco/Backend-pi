@@ -14,7 +14,6 @@ class SolicitationController {
     const [, token] = authHeader?.split(" ");
 
     const payload = decode(token);
-    console.log(payload)
     const searchIdStudent = await studentRepository.findOne({
       where: {
         user_id: payload?.sub
@@ -27,8 +26,7 @@ class SolicitationController {
         }
       }
     )
-    console.log(searchInSolicitation)
-    return response.json(searchInSolicitation);
+     return response.json(searchInSolicitation);
   }
 }
 

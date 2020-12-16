@@ -9,7 +9,6 @@ import { sendMail } from "../config/e-mail";
 import InternalEventRepository from "../repositories/InternalEventRepository";
 import { decode } from "jsonwebtoken";
 import AdminRepository from "../repositories/AdminRepository";
-import { generateSecretASCII } from "speakeasy";
 import { createSecret } from "../utils";
 
 class EventController {
@@ -107,6 +106,20 @@ class EventController {
     })
 
     return response.json(returnAllEvents)
+  }
+  async updateEvent(request: Request, response: Response) {
+    const internalEventRepository = getCustomRepository(InternalEventRepository);
+    const {id, activeEvent} = request.body;
+
+    await internalEventRepository.createQueryBuilder("internalEvent")
+    .update({
+      activeEvent: activeEvent
+    })
+    .where(
+      { id: id }
+    ).updateEntity(true).execute();
+
+    return response.json({message: "Sucesso!"})
   }
 }
 
