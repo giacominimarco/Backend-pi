@@ -59,6 +59,7 @@ routes.get("/allRequisitions", RequestHoursController.allRequestHours);
 
 routes.put("/updateStudent", UserController.updateStudent);
 routes.put("/updateAdmin", UserController.updateAdmin);
+routes.put("/updateEvent", EventController.updateEvent);
 routes.put("/nextStep/:id", RequestHoursController.requestNext);
 
 routes.get('/home', (request, response) => {
