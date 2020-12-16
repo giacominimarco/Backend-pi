@@ -100,7 +100,6 @@ class RequestHoursController {
     if(typeof(object) === "object"){
       object.map(async(item: string, index: number)=>{
         const data: DataProps = JSON.parse(item)
-        console.log(data)
         const requestHoursSave = requestHoursRepository.create({
           type_hour_id: data.typeHourId,
           state_id: dataStates[0].id,
@@ -133,7 +132,6 @@ class RequestHoursController {
         solicitation_id: id
       }
     })
-    console.log(allRequestHours)
     const allFileId = allRequestHours.map((item) => item.file_id)
 
     const requestHours = await requestHoursRepository
@@ -154,8 +152,7 @@ class RequestHoursController {
         id: In(requestHours.map((data)=>data.especify_type_hour_id))
       }
     })
-    console.log(especify)
-     const requestHoursInfo = requestHours.map((item,index)=>{
+    const requestHoursInfo = requestHours.map((item,index)=>{
 
       const requestHour = {
         id: item.id,
@@ -203,6 +200,7 @@ class RequestHoursController {
       })
       .leftJoinAndSelect("users.roles", "Roles")
       .getOne()
+      console.log(verifyUserRole)
         if("ROLE_COORD" === verifyUserRole?.roles[0].name){
           const allStates = await statesRepository.find({
             where: {
@@ -351,7 +349,6 @@ async requestNext(request: Request, response: Response) {
     const logsRequestHours = getCustomRepository(LogsRequestHoursRepository);
     const { calculated_hours, comments, status } = request.body;
     const { id } = request.params;
-    console.log(calculated_hours)
 
     const requestHoursInfo = await requestHoursRepository.findOne({
       where: {
@@ -402,13 +399,11 @@ async requestNext(request: Request, response: Response) {
 
       for (let index = 0; index < allStates.length; index++) {
         if(requestEspecifyStatus?.name === allStates[index]){
-          console.log(allStates[index+1])
           const requestNext = await statesRepository.findOne({
             where: {
               name: allStates[index+1]
             }
           })
-          console.log(requestNext)
 
           await requestHoursRepository.createQueryBuilder("requestsHours")
           .update({
