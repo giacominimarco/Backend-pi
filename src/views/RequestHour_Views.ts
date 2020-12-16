@@ -1,6 +1,7 @@
 import RequestsHours from '../models/RequestsHours';
 import Files_Views from './Files_Views';
 import File from '../models/File';
+import EspecifyTypeHour from '../models/EspecifyTypeHour';
 
 interface indexRequestHourProps {
   id: string;
@@ -15,7 +16,7 @@ interface indexRequestHourProps {
   hour: number;
   file: File;
   calculatedHours: number;
-
+  especifyTypeHourInfo?: EspecifyTypeHour
 }[]
 
 export default {
@@ -32,7 +33,9 @@ export default {
       typeHour: requestHour.typeHour,
       hour: requestHour.hour,
       file: Files_Views.render(requestHour.file),
-      calculatedHours: requestHour.calculatedHours
+      calculatedHours: requestHour.calculatedHours,
+      especifyTypeHourInfo: requestHour.especifyTypeHourInfo
+
     };
   },
   renderMany(requestHour: indexRequestHourProps[]) {

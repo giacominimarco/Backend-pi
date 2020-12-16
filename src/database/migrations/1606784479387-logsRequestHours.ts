@@ -16,6 +16,10 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
             default: "uuid_generate_v4()",
           },
           {
+            name: 'request_hour_id',
+            type: 'uuid',
+          },
+          {
             name: 'type_hour_id',
             type: 'uuid',
           },
@@ -66,6 +70,14 @@ export class logsRequestHours1606784479387 implements MigrationInterface {
           },
         ],
         foreignKeys: [
+          {
+            name: 'fk_request_hour_id',
+            columnNames: ['request_hour_id'],
+            referencedTableName: 'requestsHours',
+            referencedColumnNames: ['id'],
+            onUpdate: 'CASCADE',
+            onDelete: 'CASCADE',
+          },
           {
             name: 'fk_type_hour',
             columnNames: ['type_hour_id'],
