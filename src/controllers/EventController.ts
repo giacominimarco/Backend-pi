@@ -6,6 +6,11 @@ import PDFDocument from 'pdfkit';
 import fs from 'fs'
 import path from 'path';
 import { sendMail } from "../config/e-mail";
+import InternalEventRepository from "../repositories/InternalEventRepository";
+import { decode } from "jsonwebtoken";
+import AdminRepository from "../repositories/AdminRepository";
+import { generateSecretASCII } from "speakeasy";
+import { createSecret } from "../utils";
 
 class EventController {
 
@@ -48,6 +53,60 @@ class EventController {
 
       return response.json({message: "deu certo"})
 
+  }
+  async createEvent(request: Request, response: Response) {
+    const internalEventRepository = getCustomRepository(InternalEventRepository);
+    const infoAdminRepository = getCustomRepository(AdminRepository)
+    const {nameEvent, description, eventDate, howManyHours} = request.body;
+
+    const authHeader = request.headers.authorization || "";
+
+    const [, token] = authHeader?.split(" ");
+
+    const payload = decode(token);
+    const secret = createSecret();
+    const infoAdmin = await infoAdminRepository.findOne({
+      where: {
+        user_id: payload?.sub
+      }
+    })
+    const createInternalEvent = await internalEventRepository.create({
+      eventName: nameEvent,
+      description: description,
+      eventDate: eventDate,
+      howManyHours: howManyHours,
+      activeEvent: true,
+      info_admin_id: infoAdmin?.id,
+      key: secret,
+    })
+
+    const responseInternalEvent = await internalEventRepository.save(createInternalEvent);
+
+    return response.json(responseInternalEvent)
+  }
+  async getEvents(request: Request, response: Response) {
+    const internalEventRepository = getCustomRepository(InternalEventRepository);
+
+    const allEvents = await internalEventRepository.find({
+      order:{
+        eventDate: "DESC"
+      }
+    });
+
+    const returnAllEvents = allEvents.map((item)=>{
+      const all = {
+        eventName: item.eventName,
+        description: item.description,
+        eventDate: item.eventDate,
+        howManyHours: item.howManyHours,
+        id: item.id,
+        activeEvent: item.activeEvent,
+        key: item.key
+      }
+      return all
+    })
+
+    return response.json(returnAllEvents)
   }
 }
 

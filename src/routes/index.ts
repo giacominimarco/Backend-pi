@@ -8,8 +8,7 @@ import SessionController from "../controllers/SessionController";
 import PermissionController from "../controllers/PermissionController";
 import RoleController from "../controllers/RoleController";
 
-const routes = Router();
-const upload = multer(uploadConfig);
+
 
 import { is } from "../middlewares/permission";
 import StateController from '../controllers/StateController';
@@ -18,6 +17,11 @@ import RequestHoursController from '../controllers/RequestHoursController';
 import SolicitationController from '../controllers/SolicitationController';
 import EspecifyTypeHourController from '../controllers/EspecifyTypeHourController';
 import EventController from '../controllers/EventController';
+import LogsRequestController from '../controllers/LogsRequestController';
+
+
+const routes = Router();
+const upload = multer(uploadConfig);
 
 // Cria usuário / cadastro
 routes.post("/users", UserController.createStudent);
@@ -36,25 +40,25 @@ routes.post("/especifyTypeHour", EspecifyTypeHourController.createEspecifyTypeHo
 
 
 routes.post("/event", EventController.createPDF);
+routes.post("/createEvent", EventController.createEvent);
 
 // Se tiver um tokem ele vai acessar a rota
 routes.get('/users', UserController.index);
 routes.get("/myHours/:id", UserController.getTotalHoursOfStudent)
 routes.get('/user/:id', AuthMiddleware, UserController.indexOne);
+routes.get("/myLogs/:id", LogsRequestController.getLogForRequest);
+routes.get("/getAllEvents", EventController.getEvents);
+
 routes.get("/typeHours", TypeHourController.index);
 routes.get("/mySolicitations", SolicitationController.indexForUser);
 routes.get("/especifyTypeHour", EspecifyTypeHourController.index);
-routes.get("/teste/:id", RequestHoursController.indexRequestHour)
-routes.post("/event", EventController.createPDF);
+routes.get("/myRequisitions/:id", RequestHoursController.indexRequestHour)
 routes.get("/downloadFile", RequestHoursController.downloadFiles);
 routes.get("/allRequisitions", RequestHoursController.allRequestHours);
 
 
 routes.put("/updateStudent", UserController.updateStudent);
 routes.put("/updateAdmin", UserController.updateAdmin);
-
-routes.get("/downloadFile", RequestHoursController.downloadFiles);
-
 routes.put("/nextStep/:id", RequestHoursController.requestNext);
 
 routes.get('/home', (request, response) => {

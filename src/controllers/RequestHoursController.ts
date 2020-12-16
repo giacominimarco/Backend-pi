@@ -32,7 +32,7 @@ class RequestHoursController {
     const fileRepository = getCustomRepository(FileRepository);
     const statesRepository = getCustomRepository(StatesRepository);
     const studentRepository = getCustomRepository(StudentRepository)
-    const { description, object } = request.body;
+    const { description, object, eventType } = request.body;
 
     const authHeader = request.headers.authorization || "";
 
@@ -91,7 +91,7 @@ class RequestHoursController {
         especify_type_hour_id: data.optionHourId,
         hour: data.hour,
         calculated_hours: 0,
-        eventType: 1, //EVENTO EXTERNO
+        eventType: Number(eventType), //EVENTO EXTERNO
         dateOfIssue: data.emissionDate
       })
       await requestHoursRepository.save(requestHoursSave);
@@ -109,7 +109,7 @@ class RequestHoursController {
           file_id: responseFiles[index].id.toString(),
           hour: data.hour,
           calculated_hours: 0,
-          eventType: 1, //EVENTO EXTERNO
+          eventType: Number(eventType), //EVENTO EXTERNO
           dateOfIssue: data.emissionDate
         })
         await requestHoursRepository.save(requestHoursSave);
@@ -128,7 +128,6 @@ class RequestHoursController {
     const especifyRepository = getCustomRepository(EspecifyTypeHourRepository)
     const { id } = request.params;
 
-    console.log(id)
     const allRequestHours = await requestHoursRepository.find({
       where: {
         solicitation_id: id
@@ -150,7 +149,13 @@ class RequestHoursController {
       .leftJoinAndSelect("InfoStudent.users", "User")
       .getMany()
 
-    const requestHoursInfo = requestHours.map((item,index)=>{
+    const especify = await especifyRepository.find({
+      where: {
+        id: In(requestHours.map((data)=>data.especify_type_hour_id))
+      }
+    })
+    console.log(especify)
+     const requestHoursInfo = requestHours.map((item,index)=>{
 
       const requestHour = {
         id: item.id,
@@ -168,7 +173,10 @@ class RequestHoursController {
       }
       return requestHour
     })
-    return response.json(RequestHour_Views.renderMany(requestHoursInfo))
+    return response.json([
+      {requestHour: RequestHour_Views.renderMany(requestHoursInfo)},
+      {especifyInfo: especify}
+    ])
   }
   async allRequestHours(request: Request, response: Response) {
     const requestHoursRepository = getCustomRepository(RequestHoursRepository);
@@ -427,6 +435,7 @@ async requestNext(request: Request, response: Response) {
       solicitation_id: Number(requestHoursInfo?.solicitation_id),
       type_hour_id: requestHoursInfo?.type_hour_id,
       state_id: requestHoursInfo?.state_id,
+      request_hour_id: requestHoursInfo?.id
     })
     const responseLogs = await logsRequestHours.save(createLogs);
 
